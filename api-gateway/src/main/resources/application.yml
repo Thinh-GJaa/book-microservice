@@ -1,6 +1,9 @@
 server:
   port: 8080
 
+app:
+  api-prefix: /api/v1
+
 spring:
   application:
     name: api-gateway
@@ -16,12 +19,23 @@ spring:
         - id: book-service
           uri: lb://book-service
           predicates:
-            - Path=/api/v1/books/**
+            - Path=${app.api-prefix}/books/**
+          filters:
+            - StripPrefix=2
 
         - id: user-service
           uri: lb://user-service
           predicates:
-            - Path=/api/v1/users/**
+            - Path=${app.api-prefix}/users/**
+          filters:
+            - StripPrefix=2
+
+        - id: identity-service
+          uri: lb://identity-service
+          predicates:
+            - Path=${app.api-prefix}/auth/**
+          filters:
+            - StripPrefix=2
 
 eureka:
   client:
@@ -29,3 +43,7 @@ eureka:
       defaultZone: http://localhost:8761/eureka
   instance:
     prefer-ip-address: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
