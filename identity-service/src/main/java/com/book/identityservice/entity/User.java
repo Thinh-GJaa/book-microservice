@@ -1,9 +1,11 @@
 package com.book.identityservice.entity;
 
-import com.book.identityservice.enums.Role;
 import jakarta.persistence.*;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -13,19 +15,21 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
-    @Column(name = "username", unique = true, nullable = false)
+    @Column(name = "username", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String username;
-
-    @Column(name = "password", unique = true, nullable = false, updatable = false)
     String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
-    Role role;
+    @Column(name = "email", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
+    String email;
+
+    @Column(name = "email_verified", nullable = false, columnDefinition = "boolean default false")
+    boolean emailVerified;
+
+    @ManyToMany
+    Set<Role> roles;
 
 }

@@ -19,8 +19,9 @@ public enum ErrorCode {
     CURRENT_PASSWORD_INCORRECT(10010, HttpStatus.BAD_REQUEST, "Current password incorrect"),
     REVIEW_NOT_FOUND(10011, HttpStatus.NOT_FOUND, "Review with ID '{}' not found"),
     REVIEW_FORBIDDEN(10012, HttpStatus.FORBIDDEN, "You are not allowed to edit this review"),
-
-
+    UNAUTHORIZED(10013,HttpStatus.FORBIDDEN ,"You do not have permission"),
+    UNAUTHENTICATED(10014, HttpStatus.UNAUTHORIZED, "Unauthenticated"),
+    USER_EXISTED(10015,  HttpStatus.BAD_REQUEST,"User existed"),
 
     ROLE_NOT_FOUND(10011, HttpStatus.NOT_FOUND, "Role with name '{}' not found"),
     USER_NOT_FOUND(10012, HttpStatus.NOT_FOUND, "User with ID '{}' not found"),
