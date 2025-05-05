@@ -7,7 +7,7 @@ import java.util.Objects;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class DobValidator implements ConstraintValidator<DobConstraint, LocalDate> {
+public class DobValidator implements ConstraintValidator<ValidDob, LocalDate> {
 
     private int min;
 
@@ -21,7 +21,7 @@ public class DobValidator implements ConstraintValidator<DobConstraint, LocalDat
     }
 
     @Override
-    public void initialize(DobConstraint constraintAnnotation) {
+    public void initialize(ValidDob constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
         min = constraintAnnotation.min();
     }

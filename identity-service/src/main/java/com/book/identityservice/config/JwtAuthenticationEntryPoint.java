@@ -35,7 +35,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                 errorCode.getStatus(),
                 errorCode.getMessageTemplate(),
                 null
-                );
+        );
 
         ObjectMapper objectMapper = new ObjectMapper();
 

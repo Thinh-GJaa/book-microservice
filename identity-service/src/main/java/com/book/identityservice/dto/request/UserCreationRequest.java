@@ -2,11 +2,13 @@ package com.book.identityservice.dto.request;
 
 import java.time.LocalDate;
 
-import com.book.identityservice.validator.DobConstraint;
+import com.book.identityservice.enums.Gender;
+import com.book.identityservice.validator.ValidDob;
+import com.book.identityservice.validator.ValidPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,21 +18,29 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserCreationRequest {
-    @Size(min = 4, message = "USERNAME_INVALID")
-    String username;
 
-    @Size(min = 6, message = "INVALID_PASSWORD")
-    String password;
-
-    @Email(message = "INVALID_EMAIL")
-    @NotBlank(message = "EMAIL_IS_REQUIRED")
+    @Email(message = "Invalid email")
+    @NotBlank(message = "Email is required")
     String email;
 
+    @ValidPassword
+    String password;
+
+    @NotBlank(message = "Firstname is required")
     String firstName;
+
+    @NotBlank(message = "Lastname is required")
     String lastName;
 
-    @DobConstraint(min = 10, message = "INVALID_DOB")
+    @NotNull(message = "Gender is required")
+    Gender gender;
+
+    @NotBlank(message = "Phone number is required")
+    String phoneNumber;
+
+    @ValidDob(min = 18)
     LocalDate dob;
 
-    String city;
+    @NotBlank(message = "Address is required")
+    String address;
 }

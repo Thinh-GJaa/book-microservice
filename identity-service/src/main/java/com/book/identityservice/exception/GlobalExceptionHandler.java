@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
     public ResponseEntity<ErrorResponse> handleOptimisticLockException(ObjectOptimisticLockingFailureException ex) {
-        ErrorResponse errorResponse =  ErrorResponse.of(
+        ErrorResponse errorResponse = ErrorResponse.of(
                 String.valueOf(ErrorCode.OPTIMISTIC_LOCK.getCode()),
                 ErrorCode.OPTIMISTIC_LOCK.getStatus(),
                 ErrorCode.OPTIMISTIC_LOCK.formatMessage("Inventory update", ex.getMessage()),

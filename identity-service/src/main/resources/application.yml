@@ -1,12 +1,14 @@
 server:
-  port: 8083
+  port: 8081
+
 
 spring:
   application:
     name: identity-service
 
+
   datasource:
-    url: jdbc:mysql://localhost:3306/identity-service
+    url: jdbc:mysql://localhost:3306/identity-service?createDatabaseIfNotExist=true
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver

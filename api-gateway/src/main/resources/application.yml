@@ -23,10 +23,10 @@ spring:
           filters:
             - StripPrefix=2
 
-        - id: user-service
-          uri: lb://user-service
+        - id: profile-service
+          uri: lb://profile-service
           predicates:
-            - Path=${app.api-prefix}/users/**
+            - Path=${app.api-prefix}/profile/**
           filters:
             - StripPrefix=2
 

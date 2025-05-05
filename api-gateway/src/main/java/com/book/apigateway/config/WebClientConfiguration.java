@@ -15,14 +15,14 @@ import java.util.List;
 @Configuration
 public class WebClientConfiguration {
     @Bean
-    WebClient webClient(){
+    WebClient webClient() {
         return WebClient.builder()
-                .baseUrl("http://localhost:8083/auth")
+                .baseUrl("http://localhost:8081/auth")
                 .build();
     }
 
     @Bean
-    CorsWebFilter corsWebFilter(){
+    CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOrigins(List.of("*"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
@@ -35,7 +35,7 @@ public class WebClientConfiguration {
     }
 
     @Bean
-    IdentityClient identityClient(WebClient webClient){
+    IdentityClient identityClient(WebClient webClient) {
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory
                 .builderFor(WebClientAdapter.create(webClient)).build();
 

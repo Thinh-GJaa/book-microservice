@@ -26,8 +26,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
 
 @Component
 @Slf4j
@@ -44,28 +42,25 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     @NonFinal
     String[] publicEndpoints = {
+            "/auth/token",
+            "/auth/users",
             "/identity/auth/.*",
             "/identity/users/registration",
             "/notification/email/send",
             "/file/media/download/.*"
     };
 
-    // Mapping path với quyền tương ứng (1 quyền duy nhất cho mỗi user)
-    Map<String, String> routeRoleMap = Map.of(
-            "/user/all", "ROLE_ADMIN",
-            "/user/profile", "ROLE_USER",
-            "/product/delete", "ROLE_ADMIN",
-            "/product/view", "ROLE_USER"
-    );
-
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         log.info("Enter authentication filter....");
 
+        // Kiểm tra nếu là endpoint công khai thì bỏ qua xác thực
         if (isPublicEndpoint(exchange.getRequest())) {
+            log.info("endpoint công khai");
             return chain.filter(exchange);
         }
 
+        // Lấy Authorization header từ request
         List<String> authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION);
         if (CollectionUtils.isEmpty(authHeader)) {
             return unauthenticated(exchange.getResponse());
@@ -74,30 +69,18 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         String token = authHeader.get(0).replace("Bearer ", "");
         log.info("Token: {}", token);
 
+        // Gửi token tới IdentityService để introspect (xác thực)
         return identityService.introspect(token).flatMap(introspectResponse -> {
             if (!introspectResponse.getData().isValid()) {
                 return unauthenticated(exchange.getResponse());
             }
 
-//            String userRole = introspectResponse.getData().getRole();
-            String userRole = "Admin";
+            // Thêm thông tin xác thực vào header để chuyển tiếp tới service phía sau
+            ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
+                    .build();
+            ServerWebExchange modifiedExchange = exchange.mutate().request(modifiedRequest).build();
 
-
-            String requestPath = exchange.getRequest().getURI().getPath();
-            log.info("Request path: {}", requestPath);
-
-            for (String path : routeRoleMap.keySet()) {
-                String fullPath = apiPrefix + path;
-                if (requestPath.startsWith(fullPath)) {
-                    String allowedRole = routeRoleMap.get(path);
-                    boolean hasAccess = userRole.equals(allowedRole);
-                    if (!hasAccess) {
-                        return forbidden(exchange.getResponse());
-                    }
-                }
-            }
-
-            return chain.filter(exchange);
+            return chain.filter(modifiedExchange);
         }).onErrorResume(throwable -> unauthenticated(exchange.getResponse()));
     }
 
@@ -108,10 +91,6 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     Mono<Void> unauthenticated(ServerHttpResponse response) {
         return buildErrorResponse(response, HttpStatus.UNAUTHORIZED, "Unauthenticated");
-    }
-
-    Mono<Void> forbidden(ServerHttpResponse response) {
-        return buildErrorResponse(response, HttpStatus.FORBIDDEN, "Forbidden - You don't have permission");
     }
 
     Mono<Void> buildErrorResponse(ServerHttpResponse response, HttpStatus status, String message) {

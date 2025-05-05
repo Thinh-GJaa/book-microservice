@@ -1,12 +1,14 @@
 server:
   port: 8082
+  servlet:
+    context-path: /profile
 
 spring:
   application:
-    name: user-service
+    name: profile-service
 
   datasource:
-    url: jdbc:mysql://localhost:3306/user-service
+    url: jdbc:mysql://localhost:3306/profile-service?createDatabaseIfNotExist=true
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver

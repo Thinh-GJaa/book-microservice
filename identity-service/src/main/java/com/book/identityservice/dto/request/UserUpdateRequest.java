@@ -3,7 +3,7 @@ package com.book.identityservice.dto.request;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.book.identityservice.validator.DobConstraint;
+import com.book.identityservice.validator.ValidDob;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -18,7 +18,7 @@ public class UserUpdateRequest {
     String firstName;
     String lastName;
 
-    @DobConstraint(min = 18, message = "INVALID_DOB")
+    @ValidDob(min = 18, message = "INVALID_DOB")
     LocalDate dob;
 
     List<String> roles;
