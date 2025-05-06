@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -20,9 +21,9 @@ public class User {
     @Id
     @GeneratedValue(generator = "uuid-generator")
     @GenericGenerator(name = "uuid-generator", strategy = "uuid2")
-    String userId;
+    private String userId;
 
-    @Column
+    @Column(name = "password")
     String password;
 
     @Column(name = "email", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
@@ -31,7 +32,7 @@ public class User {
     @Column(name = "email_verified", nullable = false, columnDefinition = "boolean default false")
     boolean emailVerified;
 
-    @Column(name = "role", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
+    @Column(name = "role", columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String role;
 
 }

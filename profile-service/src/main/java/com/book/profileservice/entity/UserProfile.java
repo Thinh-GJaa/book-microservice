@@ -1,12 +1,11 @@
 package com.book.profileservice.entity;
 
-import com.book.profileservice.Gender;
+import com.book.profileservice.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -23,7 +22,7 @@ public class UserProfile {
     @Column(name = "email", unique = true)
     String email;
 
-    @Column(name = "first_name", nullable = false )
+    @Column(name = "first_name", nullable = false)
     String firstName;
 
     @Column(name = "last_name", nullable = false)

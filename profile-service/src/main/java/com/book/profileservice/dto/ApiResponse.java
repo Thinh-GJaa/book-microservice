@@ -1,4 +1,4 @@
-package com.book.identityservice.dto;
+package com.book.profileservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

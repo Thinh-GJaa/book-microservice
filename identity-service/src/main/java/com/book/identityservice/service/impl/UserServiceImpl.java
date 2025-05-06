@@ -11,6 +11,7 @@ import com.book.identityservice.mapper.UserMapper;
 import com.book.identityservice.repository.UserRepository;
 import com.book.identityservice.repository.httpclient.ProfileClient;
 import com.book.identityservice.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +38,7 @@ public class UserServiceImpl implements UserService {
 //    KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
+    @Transactional
     public CreatedProfileResponse createUser(UserCreationRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail()))
@@ -50,12 +52,14 @@ public class UserServiceImpl implements UserService {
         user.setRole("USER");
         user.setEmailVerified(false);
 
+        user = userRepository.save(user);
+
         ProfileCreationRequest profileRequest = profileMapper.toProfileCreationRequest(request);
         profileRequest.setUserId(user.getUserId());
 
-        profileClient.createProfile(profileRequest);
+        var createdProfileResponse = profileClient.createProfile(profileRequest).getData();
 
-        return profileClient.createProfile(profileRequest).getData();
+        return createdProfileResponse;
     }
 
 }

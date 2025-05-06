@@ -1,10 +1,10 @@
-package com.book.identityservice.controller;
+package com.book.profileservice.controller;
 
 
-import com.book.identityservice.dto.ApiResponse;
-import com.book.identityservice.dto.request.UserCreationRequest;
-import com.book.identityservice.dto.response.CreatedProfileResponse;
-import com.book.identityservice.service.UserService;
+import com.book.profileservice.dto.ApiResponse;
+import com.book.profileservice.dto.request.ProfileCreationRequest;
+import com.book.profileservice.dto.response.CreatedProfileResponse;
+import com.book.profileservice.service.UserProfileService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -15,19 +15,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/internal")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class UserController {
-    UserService userService;
+public class UserProfileController {
+
+    UserProfileService userProfileService;
 
     @PostMapping("/users")
-    ApiResponse<?> createUser(@RequestBody @Valid UserCreationRequest request) {
+    public ApiResponse<?> createProfileUser(@Valid @RequestBody ProfileCreationRequest request) {
         return ApiResponse.<CreatedProfileResponse>builder()
                 .message("success")
-                .data(userService.createUser(request))
+                .data(userProfileService.createProfile(request))
                 .build();
     }
-
-
 }

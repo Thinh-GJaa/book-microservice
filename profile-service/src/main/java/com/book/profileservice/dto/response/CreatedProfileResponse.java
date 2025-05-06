@@ -1,18 +1,18 @@
-package com.book.identityservice.dto.request;
+package com.book.profileservice.dto.response;
 
-import java.time.LocalDate;
 
-import com.book.identityservice.enums.Gender;
-import jakarta.validation.constraints.NotBlank;
+import com.book.profileservice.enums.Gender;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProfileCreationRequest {
+public class CreatedProfileResponse {
     String userId;
     String email;
     String firstName;

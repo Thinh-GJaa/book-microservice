@@ -44,6 +44,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     String[] publicEndpoints = {
             "/auth/token",
             "/auth/users",
+            "/auth/refresh",
             "/identity/auth/.*",
             "/identity/users/registration",
             "/notification/email/send",

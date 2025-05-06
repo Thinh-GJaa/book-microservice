@@ -19,13 +19,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     //Xử lí các yêu cầu không có token hoặc không hợp lệ
-
     @Override
     public void commence(
             HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException {
         ErrorCode errorCode = ErrorCode.UNAUTHENTICATED;
-
 
         response.setStatus(errorCode.getStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

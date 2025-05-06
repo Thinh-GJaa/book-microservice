@@ -9,6 +9,7 @@ import java.util.UUID;
 import com.book.identityservice.dto.request.AuthenticationRequest;
 import com.book.identityservice.dto.request.IntrospectRequest;
 import com.book.identityservice.dto.request.LogoutRequest;
+import com.book.identityservice.dto.request.RefreshRequest;
 import com.book.identityservice.dto.response.AuthenticationResponse;
 import com.book.identityservice.dto.response.IntrospectResponse;
 import com.book.identityservice.entity.InvalidatedToken;
@@ -102,27 +103,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
-//    @Override
-//    public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
-//        var signedJWT = verifyToken(request.getToken(), true);
-//
-//        var jit = signedJWT.getJWTClaimsSet().getJWTID();
-//        var expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-//
-//        InvalidatedToken invalidatedToken =
-//                InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
-//
-//        invalidatedTokenRepository.save(invalidatedToken);
-//
-//        var username = signedJWT.getJWTClaimsSet().getSubject();
-//
-//        var user =
-//                userRepository.findByUsername(username).orElseThrow(() -> new CustomException(ErrorCode.UNAUTHENTICATED));
-//
-//        var token = generateToken(user);
-//
-//        return AuthenticationResponse.builder().token(token).build();
-//    }
+    @Override
+    public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
+        var signedJWT = verifyToken(request.getToken(), true);
+
+        var jit = signedJWT.getJWTClaimsSet().getJWTID();
+        var expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+
+        InvalidatedToken invalidatedToken =
+                InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
+
+        invalidatedTokenRepository.save(invalidatedToken);
+
+        var username = signedJWT.getJWTClaimsSet().getSubject();
+        System.out.printf("Thinh: " + username);
+
+        var user = userRepository.findByEmail(username).orElseThrow(() -> new CustomException(ErrorCode.UNAUTHENTICATED));
+
+        var token = generateToken(user);
+
+        return AuthenticationResponse.builder().token(token).build();
+    }
 
     private String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);

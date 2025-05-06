@@ -1,4 +1,4 @@
-package com.book.profileservice;
+package com.book.profileservice.enums;
 
 public enum Gender {
     MALE,
