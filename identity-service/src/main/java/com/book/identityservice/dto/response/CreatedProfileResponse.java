@@ -3,6 +3,7 @@ package com.book.identityservice.dto.response;
 import java.time.LocalDate;
 
 import com.book.identityservice.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CreatedProfileResponse {
     String userId;
     String email;

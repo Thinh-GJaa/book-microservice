@@ -1,7 +1,6 @@
 package com.book.identityservice.dto.response;
 
-import java.util.Date;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthenticationResponse {
-    String token;
-    Date expiryTime;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class RefreshResponse {
+    String accessToken;
 }

@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class IntrospectRequest {
 
-    @NotBlank(message = "Token is required")
-    String token;
+    @NotBlank(message = "Access token is required")
+    String accessToken;
 
 }

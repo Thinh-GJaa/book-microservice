@@ -13,8 +13,13 @@ import java.time.ZoneOffset;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
-    private OffsetDateTime timestamp;
+
+    @Builder.Default
+    private OffsetDateTime timestamp = OffsetDateTime.now(ZoneOffset.UTC);
+
+    @Builder.Default
     private String message = "success";
+
     private T data;
 
     public ApiResponse(String message) {

@@ -6,31 +6,84 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
 
-    ID_REQUIRE(10000, HttpStatus.BAD_REQUEST, "'{}Id' is required"),
-    CATEGORY_NAME_ALREADY_EXISTS(10001, HttpStatus.CONFLICT, "Category name '{}' already exists"),
-    CATEGORY_NOT_FOUND(10002, HttpStatus.NOT_FOUND, "Category with ID '{}' not found"),
-    PRODUCT_NAME_ALREADY_EXISTS(10003, HttpStatus.CONFLICT, "Product name '{}' already exists"),
-    PRODUCT_NOT_FOUND(10004, HttpStatus.NOT_FOUND, "Product with ID '{}' not found"),
-    EMAIL_ALREADY_EXISTS(10005, HttpStatus.CONFLICT, "Email '{}' already exists"),
-    PHONE_NUMBER_ALREADY_EXISTS(10006, HttpStatus.CONFLICT, "Phone number '{}' already exists"),
-    USERNAME_NOT_FOUND(10007, HttpStatus.NOT_FOUND, "Username '{}' not found"),
-    PASSWORD_INCORRECT(10008, HttpStatus.UNAUTHORIZED, "Password incorrect"),
-    CONFIRM_PASSWORD_NOT_MATCH(10009, HttpStatus.BAD_REQUEST, "Confirm password does not match"),
-    CURRENT_PASSWORD_INCORRECT(10010, HttpStatus.BAD_REQUEST, "Current password incorrect"),
-    REVIEW_NOT_FOUND(10011, HttpStatus.NOT_FOUND, "Review with ID '{}' not found"),
-    REVIEW_FORBIDDEN(10012, HttpStatus.FORBIDDEN, "You are not allowed to edit this review"),
-    UNAUTHORIZED(10013, HttpStatus.FORBIDDEN, "You do not have permission"),
-    UNAUTHENTICATED(10014, HttpStatus.UNAUTHORIZED, "Unauthenticated"),
-    USER_EXISTED(10015, HttpStatus.BAD_REQUEST, "User existed"),
+    // General errors
+    INVALID_FIELD(10001, HttpStatus.BAD_REQUEST, "Invalid field"),
+    OPTIMISTIC_LOCK(10002, HttpStatus.CONFLICT, "OptimisticLock occurred"),
 
+    // Category-related errors
+    CATEGORY_NAME_ALREADY_EXISTS(10100, HttpStatus.CONFLICT, "Category name '{}' already exists"),
+    CATEGORY_NOT_FOUND(10101, HttpStatus.NOT_FOUND, "Category with ID '{}' not found"),
 
-    ROLE_NOT_FOUND(10011, HttpStatus.NOT_FOUND, "Role with name '{}' not found"),
-    USER_NOT_FOUND(10012, HttpStatus.NOT_FOUND, "User with ID '{}' not found"),
-    PRODUCT_ALREADY_IN_CART(10001, HttpStatus.CONFLICT, "Product with ID {} is already in cart"),
+    // Product-related errors
+    PRODUCT_NAME_ALREADY_EXISTS(10200, HttpStatus.CONFLICT, "Product name '{}' already exists"),
+    PRODUCT_NOT_FOUND(10201, HttpStatus.NOT_FOUND, "Product with ID '{}' not found"),
+    PRODUCT_ALREADY_IN_CART(10202, HttpStatus.CONFLICT, "Product with ID '{}' is already in cart"),
+    PRODUCT_OUT_OF_STOCK(10203, HttpStatus.NOT_FOUND, "Product with ID '{}' has been sold out"),
 
-    PRODUCT_OUT_OF_STOCK(10002, HttpStatus.NOT_FOUND, "Product with ID {} has been sold out"),
-    INVALID_FIELD(10005, HttpStatus.BAD_REQUEST, "Invalid field"),
-    OPTIMISTIC_LOCK(10006, HttpStatus.CONFLICT, "OptimisticLock occurred");
+    // User-related errors
+    EMAIL_ALREADY_EXISTS(10300, HttpStatus.CONFLICT, "Email '{}' already exists"),
+    PHONE_NUMBER_ALREADY_EXISTS(10301, HttpStatus.CONFLICT, "Phone number '{}' already exists"),
+    USERNAME_NOT_FOUND(10302, HttpStatus.NOT_FOUND, "Username '{}' not found"),
+    USER_NOT_FOUND(10303, HttpStatus.NOT_FOUND, "User with ID '{}' not found"),
+    USER_EXISTED(10304, HttpStatus.BAD_REQUEST, "User already exists"),
+
+    // Authentication and authorization errors
+    PASSWORD_INCORRECT(10400, HttpStatus.UNAUTHORIZED, "Password incorrect"),
+    CONFIRM_PASSWORD_NOT_MATCH(10401, HttpStatus.BAD_REQUEST, "Confirm password does not match"),
+    CURRENT_PASSWORD_INCORRECT(10402, HttpStatus.BAD_REQUEST, "Current password incorrect"),
+    UNAUTHORIZED(10403, HttpStatus.FORBIDDEN, "You do not have permission"),
+    UNAUTHENTICATED(10404, HttpStatus.UNAUTHORIZED, "Unauthenticated"),
+    ACCESS_DENIED(10405, HttpStatus.FORBIDDEN, "Access denied"),
+
+    // Review-related errors
+    REVIEW_NOT_FOUND(10500, HttpStatus.NOT_FOUND, "Review with ID '{}' not found"),
+    REVIEW_FORBIDDEN(10501, HttpStatus.FORBIDDEN, "You are not allowed to edit this review"),
+
+    // Role-related errors
+    ROLE_NOT_FOUND(10600, HttpStatus.NOT_FOUND, "Role with name '{}' not found"),
+
+    // Database-related errors
+    DATABASE_CONNECTION_FAILED(10700, HttpStatus.INTERNAL_SERVER_ERROR, "Failed to connect to the database"),
+    DATA_INTEGRITY_VIOLATION(10701, HttpStatus.CONFLICT, "Data integrity violation"),
+    RECORD_ALREADY_EXISTS(10702, HttpStatus.CONFLICT, "Record already exists"),
+    RECORD_NOT_FOUND(10703, HttpStatus.NOT_FOUND, "Record not found"),
+
+    // File-related errors
+    FILE_UPLOAD_FAILED(10800, HttpStatus.INTERNAL_SERVER_ERROR, "File upload failed"),
+    FILE_NOT_FOUND(10801, HttpStatus.NOT_FOUND, "File not found"),
+    UNSUPPORTED_FILE_TYPE(10802, HttpStatus.BAD_REQUEST, "Unsupported file type"),
+    FILE_TOO_LARGE(10803, HttpStatus.BAD_REQUEST, "File size exceeds the maximum limit"),
+
+    // Request-related errors
+    MALFORMED_JSON_REQUEST(10900, HttpStatus.BAD_REQUEST, "Malformed JSON request"),
+    MISSING_REQUIRED_HEADER(10901, HttpStatus.BAD_REQUEST, "Missing required header '{}"),
+    UNSUPPORTED_MEDIA_TYPE(10902, HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Unsupported media type"),
+    RATE_LIMIT_EXCEEDED(10903, HttpStatus.TOO_MANY_REQUESTS, "Rate limit exceeded"),
+
+    // Service-related errors
+    EXTERNAL_SERVICE_UNAVAILABLE(11000, HttpStatus.SERVICE_UNAVAILABLE, "External service is unavailable"),
+    EXTERNAL_SERVICE_TIMEOUT(11001, HttpStatus.GATEWAY_TIMEOUT, "External service timeout"),
+    EXTERNAL_SERVICE_ERROR(11002, HttpStatus.BAD_GATEWAY, "Error occurred in external service"),
+
+    // Book-related errors
+    BOOK_NOT_FOUND(11100, HttpStatus.NOT_FOUND, "Book with ID '{}' not found"),
+    BOOK_ALREADY_EXISTS(11101, HttpStatus.CONFLICT, "Book with title '{}' already exists"),
+    BOOK_OUT_OF_STOCK(11102, HttpStatus.BAD_REQUEST, "Book with ID '{}' is out of stock"),
+    INVALID_BOOK_CATEGORY(11103, HttpStatus.BAD_REQUEST, "Invalid book category '{}'"),
+    BOOK_PRICE_INVALID(11104, HttpStatus.BAD_REQUEST, "Book price must be greater than zero"),
+
+    // Order-related errors
+    ORDER_NOT_FOUND(11200, HttpStatus.NOT_FOUND, "Order with ID '{}' not found"),
+    ORDER_ALREADY_COMPLETED(11201, HttpStatus.CONFLICT, "Order with ID '{}' is already completed"),
+    ORDER_CANCELLATION_NOT_ALLOWED(11202, HttpStatus.FORBIDDEN, "Order with ID '{}' cannot be canceled"),
+    INVALID_ORDER_STATUS(11203, HttpStatus.BAD_REQUEST, "Invalid order status '{}'"),
+    PAYMENT_FAILED(11204, HttpStatus.PAYMENT_REQUIRED, "Payment for order with ID '{}' failed"),
+
+    // Customer-related errors
+    CUSTOMER_NOT_FOUND(11300, HttpStatus.NOT_FOUND, "Customer with ID '{}' not found"),
+    CUSTOMER_EMAIL_ALREADY_EXISTS(11301, HttpStatus.CONFLICT, "Customer email '{}' already exists"),
+    CUSTOMER_PHONE_ALREADY_EXISTS(11302, HttpStatus.CONFLICT, "Customer phone '{}' already exists"),
+    INVALID_CUSTOMER_ADDRESS(11303, HttpStatus.BAD_REQUEST, "Invalid customer address '{}'");
 
     private final int code;
     private final HttpStatus status;
@@ -46,4 +99,3 @@ public enum ErrorCode {
         return String.format(messageTemplate.replace("{}", "%s"), args);
     }
 }
-

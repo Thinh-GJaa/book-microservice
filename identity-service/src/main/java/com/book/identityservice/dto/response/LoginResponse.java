@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class IntrospectResponse {
-    boolean valid;
+public class LoginResponse {
+    String accessToken;
+    String refreshToken;
 }
