@@ -1,9 +1,14 @@
 package com.book.identityservice.config;
 
-import jakarta.servlet.http.HttpServletResponse;
+import com.book.identityservice.dto.ErrorResponse;
+import com.book.identityservice.exception.ErrorCode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -17,11 +22,11 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.AuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@Slf4j
 public class SecurityConfig {
 
     private static final String[] PUBLIC_ENDPOINTS = {
@@ -38,42 +43,45 @@ public class SecurityConfig {
         this.customJwtDecoder = customJwtDecoder;
     }
 
+    // Hàm kiểm tra request có phải là public endpoint không
+    private boolean isPublicEndpoint(HttpServletRequest request) {
+        String path = request.getServletPath();
+        String method = request.getMethod();
+        for (String endpoint : PUBLIC_ENDPOINTS) {
+            // Nếu chỉ cho phép POST cho các endpoint public
+            if (path.equals(endpoint) && "POST".equalsIgnoreCase(method)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         // Xác thực các endpoint công khai
         httpSecurity.authorizeHttpRequests(request -> request
                 // Cho phép các endpoint công khai
-                .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                 // Các endpoint khác yêu cầu xác thực
                 .anyRequest().authenticated());
 
-        // Cấu hình OAuth2 Resource Server
-        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2
-                .jwt(jwtConfigurer -> jwtConfigurer
-                        // Sử dụng customJwtDecoder để giải mã JWT
-                        .decoder(customJwtDecoder)
-                        // Cấu hình converter để chuyển đổi JWT thành đối tượng Authentication
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                // Sử dụng entry point tập trung để trả về lỗi theo ErrorCode
-                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
-                // Xử lý khi bị từ chối truy cập
-                .accessDeniedHandler((request, response, accessDeniedException) -> {
-                    // Trả về lỗi theo ErrorCode.ACCESS_DENIED
-                    var errorCode = com.book.identityservice.exception.ErrorCode.ACCESS_DENIED;
-                    response.setStatus(errorCode.getStatus().value());
-                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                    com.book.identityservice.dto.ErrorResponse errorResponse = com.book.identityservice.dto.ErrorResponse
-                            .of(
-                                    String.valueOf(errorCode.getCode()),
-                                    errorCode.getStatus(),
-                                    errorCode.getMessageTemplate(),
-                                    null);
-                    new com.fasterxml.jackson.databind.ObjectMapper()
-                            .writeValue(response.getWriter(), errorResponse);
-                    response.flushBuffer();
-                }));
+        // Log endpoint public hoặc cần xác thực
+        httpSecurity.addFilterBefore((servletRequest, servletResponse, filterChain) -> {
+            HttpServletRequest req = (HttpServletRequest) servletRequest;
+            log.info("header: {}",req.getHeader(HttpHeaders.AUTHORIZATION));
+            if (isPublicEndpoint(req)) {
+                log.info("Public endpoint accessed: {} {}", req.getMethod(), req.getRequestURI());
+            } else {
+                log.info("Endpoint yêu cầu xác thực: {} {}", req.getMethod(), req.getRequestURI());
+            }
+            filterChain.doFilter(servletRequest, servletResponse);
+        }, org.springframework.web.filter.CorsFilter.class);
 
-        // Tắt CSRF vì không cần thiết cho REST API
+        // Cấu hình OAuth2 Resource Server
+        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
+                        .decoder(customJwtDecoder)
+                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
         return httpSecurity.build();

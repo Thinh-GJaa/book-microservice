@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 @HttpExchange
 public interface IdentityClient {
 
-    @PostExchange(url = "", contentType = MediaType.APPLICATION_JSON_VALUE)
+    @PostExchange(url = "/introspect", contentType = MediaType.APPLICATION_JSON_VALUE)
     Mono<ApiResponse<IntrospectResponse>> introspect(@RequestBody IntrospectRequest request);
 
 }

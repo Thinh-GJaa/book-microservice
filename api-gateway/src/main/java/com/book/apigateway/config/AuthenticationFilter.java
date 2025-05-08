@@ -56,7 +56,6 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         log.info("Enter authentication filter....");
 
-        // Kiểm tra nếu là endpoint công khai thì bỏ qua xác thực
         if (isPublicEndpoint(exchange.getRequest())) {
             log.info("endpoint công khai");
             return chain.filter(exchange);
@@ -65,25 +64,27 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         // Lấy Authorization header từ request
         List<String> authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION);
         if (CollectionUtils.isEmpty(authHeader)) {
-            return unauthenticated(exchange.getResponse());
+            log.warn("Không có Authorization header, trả về lỗi Unauthenticated");
+            return unauthenticated(exchange.getResponse(), "Missing Authorization header");
         }
 
-        String token = authHeader.get(0).replace("Bearer ", "");
+        String token = authHeader.get(0);
         log.info("Token: {}", token);
 
         // Gửi token tới IdentityService để introspect (xác thực)
         return identityService.introspect(token).flatMap(introspectResponse -> {
-            if (!introspectResponse.getData().isValid()) {
-                return unauthenticated(exchange.getResponse());
+            log.info("Kết quả introspect: {}", introspectResponse.getData());
+            if (introspectResponse.getData().isValid()) {
+                log.info("Token hợp lệ, chuyển tiếp request");
+                return chain.filter(exchange);
+            } else {
+                log.warn("Token không hợp lệ, trả về lỗi Unauthenticated");
+                return unauthenticated(exchange.getResponse(), "Invalid token");
             }
-
-            // Thêm thông tin xác thực vào header để chuyển tiếp tới service phía sau
-            ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
-                    .build();
-            ServerWebExchange modifiedExchange = exchange.mutate().request(modifiedRequest).build();
-
-            return chain.filter(modifiedExchange);
-        }).onErrorResume(throwable -> unauthenticated(exchange.getResponse()));
+        }).onErrorResume(throwable -> {
+            log.error("Lỗi khi introspect token: {}", throwable.getMessage(), throwable);
+            return unauthenticated(exchange.getResponse(), "Error introspecting token: " + throwable.getMessage());
+        });
     }
 
     private boolean isPublicEndpoint(ServerHttpRequest request) {
@@ -93,6 +94,10 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     Mono<Void> unauthenticated(ServerHttpResponse response) {
         return buildErrorResponse(response, HttpStatus.UNAUTHORIZED, "Unauthenticated");
+    }
+
+    Mono<Void> unauthenticated(ServerHttpResponse response, String message) {
+        return buildErrorResponse(response, HttpStatus.UNAUTHORIZED, message);
     }
 
     Mono<Void> buildErrorResponse(ServerHttpResponse response, HttpStatus status, String message) {

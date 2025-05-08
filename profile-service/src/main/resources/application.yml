@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 808
   servlet:
     context-path: /profile
 

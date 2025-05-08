@@ -1,10 +1,8 @@
 package com.book.apigateway.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -12,13 +10,15 @@ import java.time.ZoneOffset;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApiResponse<T> {
 
-    private OffsetDateTime timestamp;
-    private String message;
-    private T data;
+    OffsetDateTime timestamp;
+    String message;
+    T data;
 
     public ApiResponse(String message) {
         this.timestamp = OffsetDateTime.now(ZoneOffset.UTC);

@@ -71,12 +71,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         boolean isValid = true;
         try {
             verifyToken(token, false);
+            log.info("Xác thực thành công");
         } catch (CustomException | JOSEException | ParseException e) {
             isValid = false;
             log.error("Xác thực token thất bại: {}", e.getMessage(), e);
         }
 
-        return IntrospectResponse.builder().valid(isValid).build();
+        return IntrospectResponse.builder().isValid(isValid).build();
     }
 
     @Override
@@ -223,7 +224,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             JWSObject jwsObject = new JWSObject(header, new Payload(claimsSet.toJSONObject()));
             jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
 
-            return jwsObject.serialize();
+            return "Bearer "+ jwsObject.serialize();
         } catch (JOSEException e) {
             log.error("Failed to generate token: {}", e.getMessage(), e);
             throw new CustomException(ErrorCode.JWT_SIGN_ERROR, "Token generation failed");
@@ -256,6 +257,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
         try {
+            token = token.replace("Bearer ","");
             SignedJWT signedJWT = SignedJWT.parse(token);
             JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
 
