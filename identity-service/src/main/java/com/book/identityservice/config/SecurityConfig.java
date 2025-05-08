@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.AuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -24,7 +25,6 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private static final String[] PUBLIC_ENDPOINTS = {
-            "/users/registration",
             "/auth/token",
             "/auth/introspect",
             "/auth/logout",
@@ -54,17 +54,23 @@ public class SecurityConfig {
                         .decoder(customJwtDecoder)
                         // Cấu hình converter để chuyển đổi JWT thành đối tượng Authentication
                         .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                // Xử lý khi không xác thực được
-                .authenticationEntryPoint((request, response, authException) -> {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                    response.getWriter().write("{\"message\": \"Unauthorized\"}");
-                })
+                // Sử dụng entry point tập trung để trả về lỗi theo ErrorCode
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 // Xử lý khi bị từ chối truy cập
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    // Trả về lỗi theo ErrorCode.ACCESS_DENIED
+                    var errorCode = com.book.identityservice.exception.ErrorCode.ACCESS_DENIED;
+                    response.setStatus(errorCode.getStatus().value());
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                    response.getWriter().write("{\"message\": \"Access Denied\"}");
+                    com.book.identityservice.dto.ErrorResponse errorResponse = com.book.identityservice.dto.ErrorResponse
+                            .of(
+                                    String.valueOf(errorCode.getCode()),
+                                    errorCode.getStatus(),
+                                    errorCode.getMessageTemplate(),
+                                    null);
+                    new com.fasterxml.jackson.databind.ObjectMapper()
+                            .writeValue(response.getWriter(), errorResponse);
+                    response.flushBuffer();
                 }));
 
         // Tắt CSRF vì không cần thiết cho REST API

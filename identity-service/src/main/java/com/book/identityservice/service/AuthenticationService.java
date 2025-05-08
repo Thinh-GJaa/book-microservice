@@ -18,7 +18,7 @@ public interface AuthenticationService {
 
     LoginResponse login(LoginRequest request, HttpServletResponse response);
 
-    void logout(LogoutRequest request, HttpServletResponse httpServletResponse) throws ParseException, JOSEException;
+    void logout(HttpServletRequest request, HttpServletResponse httpServletResponse) throws ParseException, JOSEException;
 
     RefreshResponse refreshToken(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
             throws ParseException, JOSEException;

@@ -1,11 +1,8 @@
 package com.book.identityservice.config;
 
 import java.io.IOException;
-import java.time.OffsetDateTime;
 
-import com.book.identityservice.dto.ApiResponse;
 import com.book.identityservice.dto.ErrorResponse;
-import com.book.identityservice.exception.CustomException;
 import com.book.identityservice.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,12 +15,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    //Xử lí các yêu cầu không có token hoặc không hợp lệ
+    // Xử lí các yêu cầu không có token hoặc không hợp lệ
     @Override
     public void commence(
             HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException {
         ErrorCode errorCode = ErrorCode.UNAUTHENTICATED;
+        // Nếu muốn phân biệt lỗi có thể kiểm tra message của authException để trả về mã
+        // lỗi khác
 
         response.setStatus(errorCode.getStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -32,8 +31,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                 String.valueOf(errorCode.getCode()),
                 errorCode.getStatus(),
                 errorCode.getMessageTemplate(),
-                null
-        );
+                null);
 
         ObjectMapper objectMapper = new ObjectMapper();
 

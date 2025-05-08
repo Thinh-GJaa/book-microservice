@@ -83,7 +83,31 @@ public enum ErrorCode {
     CUSTOMER_NOT_FOUND(11300, HttpStatus.NOT_FOUND, "Customer with ID '{}' not found"),
     CUSTOMER_EMAIL_ALREADY_EXISTS(11301, HttpStatus.CONFLICT, "Customer email '{}' already exists"),
     CUSTOMER_PHONE_ALREADY_EXISTS(11302, HttpStatus.CONFLICT, "Customer phone '{}' already exists"),
-    INVALID_CUSTOMER_ADDRESS(11303, HttpStatus.BAD_REQUEST, "Invalid customer address '{}'");
+    INVALID_CUSTOMER_ADDRESS(11303, HttpStatus.BAD_REQUEST, "Invalid customer address '{}'"),
+
+    // Cookie & Security-related errors
+    COOKIE_NOT_FOUND(12000, HttpStatus.UNAUTHORIZED, "Cookie '{}' not found"),
+    COOKIE_INVALID(12001, HttpStatus.UNAUTHORIZED, "Cookie '{}' is invalid"),
+    COOKIE_EXPIRED(12002, HttpStatus.UNAUTHORIZED, "Cookie '{}' has expired"),
+    COOKIE_ACCESS_DENIED(12003, HttpStatus.FORBIDDEN, "Access to cookie '{}' denied"),
+
+    // Token-related errors
+    TOKEN_NOT_FOUND(12100, HttpStatus.UNAUTHORIZED, "Token not found"),
+    TOKEN_INVALID(12101, HttpStatus.UNAUTHORIZED, "Token is invalid"),
+    TOKEN_EXPIRED(12102, HttpStatus.UNAUTHORIZED, "Token has expired"),
+    TOKEN_SIGNATURE_INVALID(12103, HttpStatus.UNAUTHORIZED, "Token signature is invalid"),
+    TOKEN_ALREADY_INVALIDATED(12104, HttpStatus.UNAUTHORIZED, "Token has already been invalidated"),
+    TOKEN_TYPE_MISMATCH(12105, HttpStatus.BAD_REQUEST, "Token type mismatch"),
+    TOKEN_MISSING_CLAIM(12106, HttpStatus.BAD_REQUEST, "Token missing required claim '{}'"),
+    TOKEN_BLACKLISTED(12107, HttpStatus.UNAUTHORIZED, "Token is blacklisted"),
+
+    // JWT-specific errors
+    JWT_PARSE_ERROR(12200, HttpStatus.BAD_REQUEST, "Failed to parse JWT"),
+    JWT_SIGN_ERROR(12201, HttpStatus.INTERNAL_SERVER_ERROR, "Failed to sign JWT"),
+    JWT_VERIFY_ERROR(12202, HttpStatus.UNAUTHORIZED, "Failed to verify JWT"),
+    JWT_ISSUER_INVALID(12203, HttpStatus.UNAUTHORIZED, "JWT issuer is invalid"),
+    JWT_AUDIENCE_INVALID(12204, HttpStatus.UNAUTHORIZED, "JWT audience is invalid"),
+    JWT_CLAIM_INVALID(12205, HttpStatus.BAD_REQUEST, "JWT claim '{}' is invalid");
 
     private final int code;
     private final HttpStatus status;

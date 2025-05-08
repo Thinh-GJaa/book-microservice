@@ -45,6 +45,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/auth/token",
             "/auth/users",
             "/auth/refresh",
+            "/auth/logout",
             "/identity/auth/.*",
             "/identity/users/registration",
             "/notification/email/send",

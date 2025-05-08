@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import com.book.identityservice.dto.request.LoginRequest;
 import com.book.identityservice.dto.request.IntrospectRequest;
-import com.book.identityservice.dto.request.LogoutRequest;
 import com.book.identityservice.dto.response.LoginResponse;
 import com.book.identityservice.dto.response.IntrospectResponse;
 import com.book.identityservice.dto.response.RefreshResponse;
@@ -91,7 +90,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new CustomException(ErrorCode.PASSWORD_INCORRECT);
         }
 
-        String accessToken = generateToken(user);
+        String accessToken = generateAccessToken(user);
         String refreshToken = generateRefreshToken(user);
 
         setRefreshTokenInHttpOnlyCookie(refreshToken, response);
@@ -100,23 +99,30 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void logout(LogoutRequest request, HttpServletResponse response) throws ParseException, JOSEException {
+    public void logout(HttpServletRequest request, HttpServletResponse response) throws ParseException, JOSEException {
+        // Lấy refresh token từ cookie
+        String refreshToken = getRefreshTokenFromCookie(request);
+
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            log.warn("Refresh token is missing from cookie during logout");
+            clearRefreshTokenFromCookie(response); // Xóa cookie nếu có
+            return; // Không ném lỗi, chỉ đơn giản là không làm gì thêm
+        }
 
         try {
-            SignedJWT signedJWT = verifyToken(request.getToken(), true);
+            SignedJWT signedJWT = verifyToken(refreshToken, true);
+
             String jit = signedJWT.getJWTClaimsSet().getJWTID();
             Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
 
-            InvalidatedToken invalidatedToken = InvalidatedToken.builder()
-                    .id(jit)
-                    .expiryTime(expiryTime)
-                    .build();
+            invalidateToken(jit, expiryTime);
 
-            invalidatedTokenRepository.save(invalidatedToken);
-            // Xóa Refresh Token khỏi cookie
-            clearRefreshTokenFromCookie(response);
+            log.info("Logout successful, token invalidated: {}", jit);
         } catch (CustomException e) {
-            log.error("Token đã hết hạn hoặc không hợp lệ: {}", e.getMessage(), e);
+            log.warn("Logout: Token đã hết hạn hoặc không hợp lệ: {}", e.getMessage());
+            throw e; // Ném lại lỗi để client biết lý do logout thất bại
+        } finally {
+            clearRefreshTokenFromCookie(response); // Luôn xóa cookie ở client
         }
     }
 
@@ -127,7 +133,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         if (refreshToken == null || refreshToken.isEmpty()) {
             log.warn("Refresh token is missing from cookie");
-            throw new CustomException(ErrorCode.INVALID_FIELD, "Refresh token is required");
+            throw new CustomException(ErrorCode.COOKIE_NOT_FOUND, "refresh_token");
         }
 
         try {
@@ -142,7 +148,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             User user = userRepository.findById(username)
                     .orElseThrow(() -> new CustomException(ErrorCode.UNAUTHENTICATED));
 
-            String newAccessToken = generateToken(user);
+            String newAccessToken = generateAccessToken(user);
             String newRefreshToken = generateRefreshToken(user);
 
             setRefreshTokenInHttpOnlyCookie(newRefreshToken, response);
@@ -172,22 +178,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge((int) REFRESHABLE_DURATION);
+
         response.addCookie(refreshTokenCookie);
     }
 
     // Phương thức xóa Refresh Token khỏi cookie
     private void clearRefreshTokenFromCookie(HttpServletResponse response) {
-        // Tạo một cookie mới với tên "refresh_token" nhưng không có giá trị và đặt thời gian sống bằng 0
+        // Tạo một cookie mới với tên "refresh_token" nhưng không có giá trị và đặt thời
+        // gian sống bằng 0
         Cookie refreshTokenCookie = new Cookie("refresh_token", null);
-        refreshTokenCookie.setHttpOnly(true);  // Đảm bảo cookie không thể truy cập qua JavaScript
-        refreshTokenCookie.setSecure(true);    // Chỉ gửi cookie qua HTTPS
-        refreshTokenCookie.setPath("/");       // Cookie có thể được truy cập từ tất cả các endpoint
-        refreshTokenCookie.setMaxAge(0);      // Đặt thời gian sống cookie bằng 0 để xóa nó
+        refreshTokenCookie.setHttpOnly(true); // Đảm bảo cookie không thể truy cập qua JavaScript
+        refreshTokenCookie.setSecure(true); // Chỉ gửi cookie qua HTTPS
+        refreshTokenCookie.setPath("/"); // Cookie có thể được truy cập từ tất cả các endpoint
+        refreshTokenCookie.setMaxAge(0); // Đặt thời gian sống cookie bằng 0 để xóa nó
 
         // Thêm cookie vào response để xóa nó ở client
         response.addCookie(refreshTokenCookie);
+        log.info("Đã xóa refresh token khỏi cookie");
     }
-
 
     private void invalidateToken(String tokenId, Date expiryTime) {
         InvalidatedToken invalidatedToken = InvalidatedToken.builder()
@@ -198,7 +206,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         log.info("Token invalidated: {}", tokenId);
     }
 
-    private String generateToken(User user) {
+    private String generateAccessToken(User user) {
         try {
             JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
             String tokenId = UUID.randomUUID().toString();
@@ -218,7 +226,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return jwsObject.serialize();
         } catch (JOSEException e) {
             log.error("Failed to generate token: {}", e.getMessage(), e);
-            throw new CustomException(ErrorCode.EXTERNAL_SERVICE_ERROR, "Token generation failed");
+            throw new CustomException(ErrorCode.JWT_SIGN_ERROR, "Token generation failed");
         }
     }
 
@@ -242,29 +250,39 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return jwsObject.serialize();
         } catch (JOSEException e) {
             log.error("Failed to generate refresh token: {}", e.getMessage(), e);
-            throw new CustomException(ErrorCode.EXTERNAL_SERVICE_ERROR, "Refresh token generation failed");
+            throw new CustomException(ErrorCode.JWT_SIGN_ERROR, "Refresh token generation failed");
         }
     }
 
     private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
 
-        Date expiryTime = isRefresh
-                ? Date.from(signedJWT.getJWTClaimsSet().getIssueTime().toInstant().plus(REFRESHABLE_DURATION,
-                        ChronoUnit.SECONDS))
-                : signedJWT.getJWTClaimsSet().getExpirationTime();
+            Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
 
-        if (!signedJWT.verify(verifier) || expiryTime.before(new Date())) {
-            log.warn("Token verification failed or token expired");
-            throw new CustomException(ErrorCode.UNAUTHENTICATED);
+            if (!signedJWT.verify(verifier)) {
+                log.warn("Token signature invalid");
+                throw new CustomException(ErrorCode.TOKEN_SIGNATURE_INVALID);
+            }
+
+            if (expiryTime.before(new Date())) {
+                log.warn("Token expired");
+                throw new CustomException(ErrorCode.TOKEN_EXPIRED);
+            }
+
+            if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID())) {
+                log.warn("Token has been invalidated: {}", signedJWT.getJWTClaimsSet().getJWTID());
+                throw new CustomException(ErrorCode.TOKEN_ALREADY_INVALIDATED);
+            }
+
+            return signedJWT;
+        } catch (ParseException e) {
+            log.error("JWT parse error: {}", e.getMessage(), e);
+            throw new CustomException(ErrorCode.JWT_PARSE_ERROR);
+        } catch (JOSEException e) {
+            log.error("JWT verify error: {}", e.getMessage(), e);
+            throw new CustomException(ErrorCode.JWT_VERIFY_ERROR);
         }
-
-        if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID())) {
-            log.warn("Token has been invalidated: {}", signedJWT.getJWTClaimsSet().getJWTID());
-            throw new CustomException(ErrorCode.UNAUTHENTICATED);
-        }
-
-        return signedJWT;
     }
 }
