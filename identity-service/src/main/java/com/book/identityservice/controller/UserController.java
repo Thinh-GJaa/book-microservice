@@ -5,6 +5,7 @@ import com.book.identityservice.dto.ApiResponse;
 import com.book.identityservice.dto.request.UserCreationRequest;
 import com.book.identityservice.dto.response.CreatedProfileResponse;
 import com.book.identityservice.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,8 @@ public class UserController {
         log.info("test");
         return new ApiResponse<>("test");
     }
+
+
 
 
 }

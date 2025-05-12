@@ -3,8 +3,6 @@ package com.book.profileservice.dto.request;
 import com.book.profileservice.enums.Gender;
 import com.book.profileservice.validator.ValidDob;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -16,31 +14,22 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProfileCreationRequest {
-
-    @NotBlank(message = "UserId is required")
-    String userId;
+public class UpdateProfileRequest {
 
     @Email(message = "Email invalid")
-    @NotBlank(message = "Email is required")
     String email;
 
-    @NotBlank(message = "FirstName is required")
     String firstName;
 
-    @NotBlank(message = "LastName is required")
     String lastName;
 
-    @NotNull(message = "Gender is required")
     Gender gender;
 
-    @NotNull(message = "PhoneNumber is required")
-    @Pattern(regexp = "^0(3|5|7|8|9)\\d{8}$", message = "Số điện thoại không hợp lệ")
+    @Pattern(regexp = "^0(3|5|7|8|9)\\d{8}$", message = "Phone number invalid")
     String phoneNumber;
 
     @ValidDob(min = 18)
     LocalDate dob;
 
-    @NotBlank(message = "Address is required")
     String address;
 }

@@ -3,10 +3,7 @@ package com.book.identityservice.controller;
 import java.text.ParseException;
 
 import com.book.identityservice.dto.ApiResponse;
-import com.book.identityservice.dto.request.LoginRequest;
-import com.book.identityservice.dto.request.IntrospectRequest;
-import com.book.identityservice.dto.request.LogoutRequest;
-import com.book.identityservice.dto.request.RefreshRequest;
+import com.book.identityservice.dto.request.*;
 import com.book.identityservice.dto.response.LoginResponse;
 import com.book.identityservice.dto.response.IntrospectResponse;
 import com.book.identityservice.dto.response.RefreshResponse;
@@ -15,10 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import com.nimbusds.jose.JOSEException;
@@ -69,4 +63,13 @@ public class AuthenticationController {
                 .message("Logout successfully")
                 .build();
     }
+
+    @PutMapping("change-password")
+    public ApiResponse<?> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest){
+        authenticationService.changePassword(changePasswordRequest);
+        return ApiResponse.<Void>builder().
+                message("Change password successfully")
+                .build();
+    }
+
 }

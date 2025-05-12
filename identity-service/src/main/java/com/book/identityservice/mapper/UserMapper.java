@@ -1,11 +1,9 @@
 package com.book.identityservice.mapper;
 
 import com.book.identityservice.dto.request.UserCreationRequest;
-import com.book.identityservice.dto.request.UserUpdateRequest;
-import com.book.identityservice.dto.response.UserResponse;
+import com.book.identityservice.dto.response.UserInfoResponse;
 import com.book.identityservice.entity.User;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 
@@ -13,8 +11,6 @@ import org.mapstruct.MappingTarget;
 public interface UserMapper {
     User toUser(UserCreationRequest request);
 
-    UserResponse toUserResponse(User user);
+    UserInfoResponse toUserInfoResponse(User user);
 
-    @Mapping(target = "role", ignore = true)
-    void updateUser(@MappingTarget User user, UserUpdateRequest request);
 }

@@ -1,5 +1,6 @@
 package com.book.identityservice.service;
 
+import com.book.identityservice.dto.request.ChangePasswordRequest;
 import com.book.identityservice.dto.request.LoginRequest;
 import com.book.identityservice.dto.request.IntrospectRequest;
 import com.book.identityservice.dto.request.LogoutRequest;
@@ -22,5 +23,8 @@ public interface AuthenticationService {
 
     RefreshResponse refreshToken(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
             throws ParseException, JOSEException;
+
+
+    void changePassword(ChangePasswordRequest changePasswordRequest);
 
 }

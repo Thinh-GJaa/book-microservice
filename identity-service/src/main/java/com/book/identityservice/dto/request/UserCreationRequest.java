@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -36,6 +37,7 @@ public class UserCreationRequest {
     Gender gender;
 
     @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "^0(3|5|7|8|9)\\d{8}$", message = "Phone number invalid")
     String phoneNumber;
 
     @ValidDob(min = 18)
