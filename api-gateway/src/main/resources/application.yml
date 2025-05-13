@@ -37,6 +37,13 @@ spring:
           filters:
             - StripPrefix=2
 
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=${app.api-prefix}/notification/**
+          filters:
+            - StripPrefix=2
+
 eureka:
   client:
     service-url:
