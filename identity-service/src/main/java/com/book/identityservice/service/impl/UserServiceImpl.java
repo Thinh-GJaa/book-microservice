@@ -1,5 +1,6 @@
 package com.book.identityservice.service.impl;
 
+import com.book.event.NotificationEvent;
 import com.book.identityservice.dto.request.ProfileCreationRequest;
 import com.book.identityservice.dto.request.UserCreationRequest;
 import com.book.identityservice.dto.response.CreatedProfileResponse;
@@ -12,9 +13,9 @@ import com.book.identityservice.repository.UserRepository;
 import com.book.identityservice.repository.httpclient.ProfileClient;
 import com.book.identityservice.service.UserService;
 import jakarta.transaction.Transactional;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,16 +27,13 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class UserServiceImpl implements UserService {
-    UserRepository userRepository;
 
+    UserRepository userRepository;
     UserMapper userMapper;
     ProfileMapper profileMapper;
-
     PasswordEncoder passwordEncoder;
-
+    KafkaTemplate<String, Object> kafkaTemplate;
     ProfileClient profileClient;
-
-//    KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
     @Transactional
@@ -44,8 +42,9 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(request.getEmail()))
             throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS, request.getEmail());
 
-//        if (userRepository.existsByPhoneNumber(request.getPhoneNumber()))
-//            throw new CustomException(ErrorCode.PHONE_NUMBER_ALREADY_EXISTS, request.getPhoneNumber());
+        // if (userRepository.existsByPhoneNumber(request.getPhoneNumber()))
+        // throw new CustomException(ErrorCode.PHONE_NUMBER_ALREADY_EXISTS,
+        // request.getPhoneNumber());
 
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -59,6 +58,15 @@ public class UserServiceImpl implements UserService {
 
         var createdProfileResponse = profileClient.createProfile(profileRequest).getData();
 
+        NotificationEvent notificationEvent = NotificationEvent.builder()
+                .channel("Email")
+                .recipient(request.getEmail())
+                .subject("Welcome to microservice (ThinhGJaa)")
+                .body("Hello, " + request.getLastName())
+                .build();
+
+
+        kafkaTemplate.send("create-profile-topic", notificationEvent);
         return createdProfileResponse;
     }
 

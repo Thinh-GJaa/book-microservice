@@ -1,6 +1,5 @@
 package com.book.identityservice.controller;
 
-
 import com.book.identityservice.dto.ApiResponse;
 import com.book.identityservice.dto.request.UserCreationRequest;
 import com.book.identityservice.dto.response.CreatedProfileResponse;
@@ -11,7 +10,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/auth")
@@ -22,20 +23,13 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/users")
-    ApiResponse<?> createUser(@RequestBody @Valid UserCreationRequest request) {
-        return ApiResponse.<CreatedProfileResponse>builder()
-                .message("success")
+    ResponseEntity<ApiResponse<?>> createUser(@RequestBody @Valid UserCreationRequest request) {
+        ApiResponse<CreatedProfileResponse> response = ApiResponse.<CreatedProfileResponse>builder()
+                .message("Create profile successfully")
                 .data(userService.createUser(request))
                 .build();
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-
-    @PutMapping("/test")
-    ApiResponse<?> test(){
-        log.info("test");
-        return new ApiResponse<>("test");
-    }
-
-
 
 
 }

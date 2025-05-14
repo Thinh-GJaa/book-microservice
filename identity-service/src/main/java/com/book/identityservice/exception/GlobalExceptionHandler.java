@@ -1,6 +1,9 @@
 package com.book.identityservice.exception;
 
 import com.book.identityservice.dto.ErrorResponse;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.FeignException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,7 +20,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-
 
 import java.util.List;
 import java.util.Objects;
@@ -184,6 +186,40 @@ public class GlobalExceptionHandler {
                                 "405",
                                 HttpStatus.METHOD_NOT_ALLOWED,
                                 "HTTP method not supported: " + ex.getMethod(),
+                                null);
+        }
+
+        // Xử lý lỗi khi gọi Feign client gặp lỗi tùy chỉnh
+        @ExceptionHandler(FeignException.class)
+        public ResponseEntity<ErrorResponse> handleCustomFeignException(FeignException ex) {
+                log.error("Feign Exception: {}", ex.getMessage(), ex);
+                String code = String.valueOf(ex.status());
+                HttpStatus status = HttpStatus.valueOf(ex.status());
+                String message = ex.getMessage();
+
+                // Cố gắng parse nội dung JSON trả về từ Feign để lấy thông tin chi tiết
+                try {
+                        String content = ex.contentUTF8();
+                        if (content != null && content.startsWith("{")) {
+                                ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                                JsonNode node = mapper.readTree(content);
+                                code = node.has("errorCode") ? node.get("errorCode").asText() : code;
+                                message = node.has("message") ? node.get("message").asText() : message;
+                                if (node.has("status")) {
+                                        try {
+                                                status = HttpStatus.valueOf(node.get("status").asText());
+                                        } catch (Exception ignored) {
+                                        }
+                                }
+                        }
+                } catch (Exception e) {
+                        log.warn("Could not parse Feign error response body: {}", e.getMessage());
+                }
+
+                return buildErrorResponse(
+                                code,
+                                status,
+                                message,
                                 null);
         }
 

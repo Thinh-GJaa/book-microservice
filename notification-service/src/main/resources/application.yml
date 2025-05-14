@@ -19,6 +19,27 @@ spring:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
+  kafka:
+    bootstrap-servers: localhost:9093
+    consumer:
+      group-id: notification-group
+      auto-offset-reset: earliest
+#      enable-auto-commit: true
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+
+    # Cấu hình gửi email
+    mail:
+      host: smtp.gmail.com
+      port: 587
+      username: xthinh04052002@gmail.com
+      password: your-email-password
+      properties:
+        mail.smtp.auth: true
+        mail.smtp.starttls.enable: true
+
 eureka:
   client:
     register-with-eureka: true

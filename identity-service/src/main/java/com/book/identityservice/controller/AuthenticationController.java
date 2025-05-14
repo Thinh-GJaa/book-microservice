@@ -12,8 +12,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.ResponseEntity;
 
 import com.nimbusds.jose.JOSEException;
 
@@ -31,45 +32,52 @@ public class AuthenticationController {
     AuthenticationService authenticationService;
 
     @PostMapping("/token")
-    ApiResponse<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse httpServletResponse) {
+    ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest loginRequest,
+            HttpServletResponse httpServletResponse) {
         var data = authenticationService.login(loginRequest, httpServletResponse);
-        return ApiResponse.<LoginResponse>builder()
+        ApiResponse<LoginResponse> response = ApiResponse.<LoginResponse>builder()
                 .message("Login successfully")
                 .data(data).build();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/introspect")
-    ApiResponse<IntrospectResponse> introspect(@Valid @RequestBody IntrospectRequest request) {
+    ResponseEntity<ApiResponse<IntrospectResponse>> introspect(@Valid @RequestBody IntrospectRequest request) {
         var result = authenticationService.introspect(request);
-        return ApiResponse.<IntrospectResponse>builder()
+        ApiResponse<IntrospectResponse> response = ApiResponse.<IntrospectResponse>builder()
                 .data(result)
                 .build();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/refresh")
-    ApiResponse<?> refreshToken(HttpServletRequest request, HttpServletResponse response)
+    ResponseEntity<ApiResponse<RefreshResponse>> refreshToken(HttpServletRequest request, HttpServletResponse response)
             throws ParseException, JOSEException {
         RefreshResponse result = authenticationService.refreshToken(request, response);
-        return ApiResponse.<RefreshResponse>builder()
+        ApiResponse<RefreshResponse> apiResponse = ApiResponse.<RefreshResponse>builder()
                 .message("Refresh token successfully")
                 .data(result)
                 .build();
+        return ResponseEntity.ok(apiResponse);
     }
 
     @PostMapping("/logout")
-    ApiResponse<Void> logout(HttpServletRequest request, HttpServletResponse response) throws ParseException, JOSEException {
+    ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request, HttpServletResponse response)
+            throws ParseException, JOSEException {
         authenticationService.logout(request, response);
-        return ApiResponse.<Void>builder()
+        ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
                 .message("Logout successfully")
                 .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("change-password")
-    public ApiResponse<?> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest){
+    public ResponseEntity<ApiResponse<?>> changePassword(
+            @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
         authenticationService.changePassword(changePasswordRequest);
-        return ApiResponse.<Void>builder().
-                message("Change password successfully")
+        ApiResponse<Void> apiResponse = ApiResponse.<Void>builder().message("Change password successfully")
                 .build();
+        return ResponseEntity.ok(apiResponse);
     }
 
 }
