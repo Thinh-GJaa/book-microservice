@@ -165,7 +165,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
-
     private String getRefreshTokenFromCookie(HttpServletRequest request) {
         if (request.getCookies() == null)
             return null;
@@ -223,12 +222,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .issueTime(new Date())
                     .expirationTime(expiryTime)
                     .jwtID(tokenId)
+                    .claim("role", "ROLE_" + user.getRole()) // Lưu role duy nhất, đúng chuẩn
                     .build();
 
             JWSObject jwsObject = new JWSObject(header, new Payload(claimsSet.toJSONObject()));
             jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
 
-            return "Bearer "+ jwsObject.serialize();
+            return "Bearer " + jwsObject.serialize();
         } catch (JOSEException e) {
             log.error("Failed to generate token: {}", e.getMessage(), e);
             throw new CustomException(ErrorCode.JWT_SIGN_ERROR, "Token generation failed");
@@ -247,6 +247,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .issueTime(new Date())
                     .expirationTime(expiryTime)
                     .jwtID(tokenId)
+                    .claim("role", "ROLE_"+ user.getRole())
                     .build();
 
             JWSObject jwsObject = new JWSObject(header, new Payload(claimsSet.toJSONObject()));
@@ -261,7 +262,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
         try {
-            token = token.replace("Bearer ","");
+            token = token.replace("Bearer ", "");
             SignedJWT signedJWT = SignedJWT.parse(token);
             JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
 
@@ -299,12 +300,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String userId = context.getAuthentication().getName();
 
         User user = userRepository.findById(userId)
-                .orElseThrow(()->new CustomException(ErrorCode.USERNAME_NOT_FOUND, userId));
+                .orElseThrow(() -> new CustomException(ErrorCode.USERNAME_NOT_FOUND, userId));
 
-        if(!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword()))
+        if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword()))
             throw new CustomException(ErrorCode.CONFIRM_PASSWORD_NOT_MATCH);
 
-        if(!passwordEncoder.matches(changePasswordRequest.getPassword(),user.getPassword()))
+        if (!passwordEncoder.matches(changePasswordRequest.getPassword(), user.getPassword()))
             throw new CustomException(ErrorCode.PASSWORD_INCORRECT);
 
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
@@ -312,7 +313,5 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userRepository.save(user);
         log.info("Thay đổi mật khẩu thành công");
     }
-
-
 
 }

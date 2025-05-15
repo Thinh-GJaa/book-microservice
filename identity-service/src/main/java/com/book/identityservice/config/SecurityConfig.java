@@ -34,7 +34,8 @@ public class SecurityConfig {
             "/auth/introspect",
             "/auth/logout",
             "/auth/refresh",
-            "/auth/users"
+            "/auth/users",
+            "/auth/admin"
     };
 
     private final CustomJwtDecoder customJwtDecoder;
@@ -68,7 +69,7 @@ public class SecurityConfig {
         // Log endpoint public hoặc cần xác thực
         httpSecurity.addFilterBefore((servletRequest, servletResponse, filterChain) -> {
             HttpServletRequest req = (HttpServletRequest) servletRequest;
-            log.info("header: {}",req.getHeader(HttpHeaders.AUTHORIZATION));
+            log.info("header: {}", req.getHeader(HttpHeaders.AUTHORIZATION));
             if (isPublicEndpoint(req)) {
                 log.info("Public endpoint accessed: {} {}", req.getMethod(), req.getRequestURI());
             } else {
@@ -79,8 +80,8 @@ public class SecurityConfig {
 
         // Cấu hình OAuth2 Resource Server
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
-                        .decoder(customJwtDecoder)
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                .decoder(customJwtDecoder)
+                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
@@ -88,15 +89,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        // Không thêm tiền tố vào quyền (authority)
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        grantedAuthoritiesConverter.setAuthorityPrefix(""); // Không thêm "ROLE_" lần nữa
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("role"); // Đúng tên claim bạn dùng
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        // Sử dụng converter để lấy danh sách quyền từ JWT
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
-
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
         return jwtAuthenticationConverter;
     }
 

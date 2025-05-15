@@ -42,14 +42,17 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     @NonFinal
     String[] publicEndpoints = {
+
+            //identity-service
             "/auth/token",
-            "/auth/users",
-            "/auth/refresh",
+            "/auth/introspect",
             "/auth/logout",
-            "/identity/auth/.*",
-            "/identity/users/registration",
-            "/notification/email/send",
-            "/file/media/download/.*"
+            "/auth/refresh",
+            "/auth/users",
+            "/auth/admin"
+
+
+
     };
 
     @Override
