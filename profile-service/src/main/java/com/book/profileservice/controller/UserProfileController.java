@@ -31,7 +31,7 @@ public class UserProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/my-profile")
+    @PatchMapping("/my-profile")
     public ResponseEntity<ApiResponse<UpdateProfileResponse>> updateMyProfile(
             @Valid @RequestBody UpdateProfileRequest updateProfileRequest) {
         ApiResponse<UpdateProfileResponse> response = ApiResponse.<UpdateProfileResponse>builder()
@@ -40,4 +40,5 @@ public class UserProfileController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
 }

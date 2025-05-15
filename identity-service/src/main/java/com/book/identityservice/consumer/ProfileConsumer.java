@@ -1,7 +1,6 @@
 package com.book.identityservice.consumer;
 
 import com.book.identityservice.dto.event.UpdateEmailEvent;
-import com.book.identityservice.entity.User;
 import com.book.identityservice.parser.Parser;
 import com.book.identityservice.service.UserService;
 import lombok.AccessLevel;

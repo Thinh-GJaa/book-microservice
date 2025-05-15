@@ -73,7 +73,6 @@ public class AuthenticationController {
                 return new ResponseEntity<>(apiResponse, HttpStatus.NO_CONTENT);
         }
 
-        @PreAuthorize("hasRole('USER')")
         @PutMapping("/change-password")
         public ResponseEntity<ApiResponse<?>> changePassword(
                         @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {

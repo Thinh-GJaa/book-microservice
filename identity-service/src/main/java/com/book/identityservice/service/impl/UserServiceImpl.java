@@ -2,6 +2,7 @@ package com.book.identityservice.service.impl;
 
 import com.book.identityservice.dto.event.NotificationEvent;
 import com.book.identityservice.dto.event.UpdateEmailEvent;
+import com.book.identityservice.dto.request.AdminCreationRequest;
 import com.book.identityservice.dto.request.ProfileCreationRequest;
 import com.book.identityservice.dto.request.UserCreationRequest;
 import com.book.identityservice.dto.response.CreatedProfileResponse;
@@ -44,9 +45,6 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(request.getEmail()))
             throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS, request.getEmail());
 
-        // if (userRepository.existsByPhoneNumber(request.getPhoneNumber()))
-        // throw new CustomException(ErrorCode.PHONE_NUMBER_ALREADY_EXISTS,
-        // request.getPhoneNumber());
 
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -61,6 +59,31 @@ public class UserServiceImpl implements UserService {
         var createdProfileResponse = profileClient.createProfile(profileRequest).getData();
 
         notificationProducer.createProfileNotification(request.getLastName(), request.getEmail());
+
+        return createdProfileResponse;
+    }
+
+    @Override
+    @Transactional
+    public CreatedProfileResponse createAdmin(AdminCreationRequest adminCreationRequest) {
+        if (userRepository.existsByEmail(adminCreationRequest.getEmail()))
+            throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS, adminCreationRequest.getEmail());
+
+
+        User user = userMapper.toUser(adminCreationRequest);
+        user.setPassword(passwordEncoder.encode(adminCreationRequest.getPassword()));
+        user.setRole("ADMIN");
+        user.setEmailVerified(false);
+
+        user = userRepository.save(user);
+
+        ProfileCreationRequest profileRequest = profileMapper.toProfileCreationRequest(adminCreationRequest);
+        profileRequest.setUserId(user.getUserId());
+
+        var createdProfileResponse = profileClient.createProfile(profileRequest).getData();
+
+        notificationProducer.createProfileNotification(adminCreationRequest.getLastName()
+                , adminCreationRequest.getEmail());
 
         return createdProfileResponse;
     }
