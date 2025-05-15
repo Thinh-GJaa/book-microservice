@@ -1,8 +1,13 @@
-package com.book.event;
+package com.book.identityservice.dto.event;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serializable;
 import java.util.Map;
 
 @Data

@@ -1,5 +1,6 @@
 package com.book.profileservice.service.impl;
 
+import com.book.profileservice.dto.event.UpdateEmailEvent;
 import com.book.profileservice.dto.request.ProfileCreationRequest;
 import com.book.profileservice.dto.request.UpdateProfileRequest;
 import com.book.profileservice.dto.response.CreatedProfileResponse;
@@ -9,6 +10,7 @@ import com.book.profileservice.entity.UserProfile;
 import com.book.profileservice.exception.CustomException;
 import com.book.profileservice.exception.ErrorCode;
 import com.book.profileservice.mapper.ProfileMapper;
+import com.book.profileservice.producer.ProfileProducer;
 import com.book.profileservice.repository.UserProfileRepository;
 import com.book.profileservice.service.UserProfileService;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
@@ -16,6 +18,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +31,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     UserProfileRepository userProfileRepository;
 
     ProfileMapper profileMapper;
+
+    ProfileProducer profileProducer;
 
     @Override
     public CreatedProfileResponse createProfile(ProfileCreationRequest request) {
@@ -81,6 +86,9 @@ public class UserProfileServiceImpl implements UserProfileService {
 
         userProfile = userProfileRepository.save(userProfile);
 
+        profileProducer.updateEmail(userProfile.getUserId(), userProfile.getEmail());
+
         return profileMapper.toUpdateProfileResponse(userProfile);
     }
+
 }

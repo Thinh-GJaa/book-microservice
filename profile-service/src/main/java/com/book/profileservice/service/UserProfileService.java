@@ -1,5 +1,6 @@
 package com.book.profileservice.service;
 
+import com.book.profileservice.dto.event.UpdateEmailEvent;
 import com.book.profileservice.dto.request.ProfileCreationRequest;
 import com.book.profileservice.dto.request.UpdateProfileRequest;
 import com.book.profileservice.dto.response.CreatedProfileResponse;

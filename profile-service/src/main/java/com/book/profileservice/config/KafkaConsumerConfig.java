@@ -1,4 +1,4 @@
-package com.book.notificationservice.config;
+package com.book.profileservice.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

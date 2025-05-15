@@ -1,6 +1,7 @@
 package com.book.identityservice.service.impl;
 
-import com.book.event.NotificationEvent;
+import com.book.identityservice.dto.event.NotificationEvent;
+import com.book.identityservice.dto.event.UpdateEmailEvent;
 import com.book.identityservice.dto.request.ProfileCreationRequest;
 import com.book.identityservice.dto.request.UserCreationRequest;
 import com.book.identityservice.dto.response.CreatedProfileResponse;
@@ -9,6 +10,7 @@ import com.book.identityservice.exception.CustomException;
 import com.book.identityservice.exception.ErrorCode;
 import com.book.identityservice.mapper.ProfileMapper;
 import com.book.identityservice.mapper.UserMapper;
+import com.book.identityservice.producer.NotificationProducer;
 import com.book.identityservice.repository.UserRepository;
 import com.book.identityservice.repository.httpclient.ProfileClient;
 import com.book.identityservice.service.UserService;
@@ -32,7 +34,7 @@ public class UserServiceImpl implements UserService {
     UserMapper userMapper;
     ProfileMapper profileMapper;
     PasswordEncoder passwordEncoder;
-    KafkaTemplate<String, Object> kafkaTemplate;
+    NotificationProducer notificationProducer;
     ProfileClient profileClient;
 
     @Override
@@ -58,16 +60,31 @@ public class UserServiceImpl implements UserService {
 
         var createdProfileResponse = profileClient.createProfile(profileRequest).getData();
 
-        NotificationEvent notificationEvent = NotificationEvent.builder()
-                .channel("Email")
-                .recipient(request.getEmail())
-                .subject("Welcome to microservice (ThinhGJaa)")
-                .body("Hello, " + request.getLastName())
-                .build();
+        notificationProducer.createProfileNotification(request.getLastName(), request.getEmail());
 
-
-        kafkaTemplate.send("create-profile-topic", notificationEvent);
         return createdProfileResponse;
+    }
+
+    @Override
+    public void updateEmailEvent(UpdateEmailEvent event) {
+
+        User user = userRepository.findById(event.getUserId())
+                .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND, event.getUserId()));
+
+        //Nếu thay đổi trùng với email hiện tại thì return
+        if(event.getEmail().equals(user.getEmail()))
+            return;
+
+
+        if(userRepository.existsByEmail(event.getEmail())
+            && !event.getEmail().equals(user.getEmail())){
+            throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS, event.getEmail());
+        }
+
+        user.setEmail(event.getEmail());
+
+        userRepository.save(user);
+
     }
 
 }

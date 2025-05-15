@@ -22,7 +22,13 @@ spring:
     bootstrap-servers: localhost:9093 # Kafka cluster address
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+    consumer:
+      group-id: identity-group  # tên group consumer
+      auto-offset-reset: earliest      # bắt đầu từ đầu nếu chưa có offset
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 eureka:
   client:
