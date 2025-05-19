@@ -6,12 +6,12 @@ import com.book.identityservice.dto.request.AdminCreationRequest;
 import com.book.identityservice.dto.request.ChangePasswordRequest;
 import com.book.identityservice.dto.request.ResetPasswordRequets;
 import com.book.identityservice.dto.request.UserCreationRequest;
-import com.book.identityservice.dto.response.CreatedProfileResponse;
+import com.book.identityservice.dto.response.ProfileResponse;
 
 public interface UserService {
-    CreatedProfileResponse createUser(UserCreationRequest request);
+    ProfileResponse createUser(UserCreationRequest request);
 
-    CreatedProfileResponse createAdmin(AdminCreationRequest adminCreationRequest);
+    ProfileResponse createAdmin(AdminCreationRequest adminCreationRequest);
 
     void updateEmailEvent(UpdateEmailEvent event);
 

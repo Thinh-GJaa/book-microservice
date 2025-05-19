@@ -2,8 +2,7 @@ package com.book.profileservice.controller;
 
 import com.book.profileservice.dto.ApiResponse;
 import com.book.profileservice.dto.request.UpdateProfileRequest;
-import com.book.profileservice.dto.response.MyProfileResponse;
-import com.book.profileservice.dto.response.UpdateProfileResponse;
+import com.book.profileservice.dto.response.ProfileResponse;
 import com.book.profileservice.service.UserProfileService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -23,8 +22,8 @@ public class UserProfileController {
     UserProfileService userProfileService;
 
     @GetMapping("/my-profile")
-    public ResponseEntity<ApiResponse<MyProfileResponse>> getMyProfile() {
-        ApiResponse<MyProfileResponse> response = ApiResponse.<MyProfileResponse>builder()
+    public ResponseEntity<ApiResponse<ProfileResponse>> getMyProfile() {
+        ApiResponse<ProfileResponse> response = ApiResponse.<ProfileResponse>builder()
                 .data(userProfileService.getMyProfile())
                 .message("Get my profile successfully")
                 .build();
@@ -32,13 +31,27 @@ public class UserProfileController {
     }
 
     @PatchMapping("/my-profile")
-    public ResponseEntity<ApiResponse<UpdateProfileResponse>> updateMyProfile(
+    public ResponseEntity<ApiResponse<ProfileResponse>> updateMyProfile(
             @Valid @RequestBody UpdateProfileRequest updateProfileRequest) {
-        ApiResponse<UpdateProfileResponse> response = ApiResponse.<UpdateProfileResponse>builder()
+        ApiResponse<ProfileResponse> response = ApiResponse.<ProfileResponse>builder()
                 .data(userProfileService.updateMyProfile(updateProfileRequest))
                 .message("Update my profile successfully")
                 .build();
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<ApiResponse<ProfileResponse>> getProfileByUserId(
+            @PathVariable String userId){
+        ApiResponse<ProfileResponse> apiResponse = ApiResponse.<ProfileResponse>builder()
+                .message("Get profile by Id successfully")
+                .data(userProfileService.getProfileByUserId(userId))
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+
+
 
 }

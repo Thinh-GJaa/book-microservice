@@ -2,9 +2,7 @@ package com.book.profileservice.service.impl;
 
 import com.book.profileservice.dto.request.ProfileCreationRequest;
 import com.book.profileservice.dto.request.UpdateProfileRequest;
-import com.book.profileservice.dto.response.CreatedProfileResponse;
-import com.book.profileservice.dto.response.MyProfileResponse;
-import com.book.profileservice.dto.response.UpdateProfileResponse;
+import com.book.profileservice.dto.response.ProfileResponse;
 import com.book.profileservice.entity.UserProfile;
 import com.book.profileservice.exception.CustomException;
 import com.book.profileservice.exception.ErrorCode;
@@ -32,7 +30,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     ProfileProducer profileProducer;
 
     @Override
-    public CreatedProfileResponse createProfile(ProfileCreationRequest request) {
+    public ProfileResponse createProfile(ProfileCreationRequest request) {
 
         if (userProfileRepository.existsByUserId(request.getUserId()))
             throw new CustomException(ErrorCode.USER_EXISTED, request.getUserId());
@@ -47,11 +45,11 @@ public class UserProfileServiceImpl implements UserProfileService {
 
         userProfile = userProfileRepository.save(userProfile);
 
-        return profileMapper.toCreatedProfileResponse(userProfile);
+        return profileMapper.toProfileResponse(userProfile);
     }
 
     @Override
-    public MyProfileResponse getMyProfile() {
+    public ProfileResponse getMyProfile() {
 
         var context = SecurityContextHolder.getContext();
         String userId = context.getAuthentication().getName();
@@ -59,11 +57,11 @@ public class UserProfileServiceImpl implements UserProfileService {
         UserProfile userProfile = userProfileRepository.findById(userId)
                 .orElseThrow(()-> new CustomException(ErrorCode.USERNAME_NOT_FOUND, userId));
 
-        return profileMapper.toMyProfileResponse(userProfile);
+        return profileMapper.toProfileResponse(userProfile);
     }
 
     @Override
-    public UpdateProfileResponse updateMyProfile(UpdateProfileRequest updateProfileRequest) {
+    public ProfileResponse updateMyProfile(UpdateProfileRequest updateProfileRequest) {
 
         var context = SecurityContextHolder.getContext();
         String userId = context.getAuthentication().getName();
@@ -85,7 +83,16 @@ public class UserProfileServiceImpl implements UserProfileService {
 
         profileProducer.updateEmail(userProfile.getUserId(), userProfile.getEmail());
 
-        return profileMapper.toUpdateProfileResponse(userProfile);
+        return profileMapper.toProfileResponse(userProfile);
+    }
+
+    @Override
+    public ProfileResponse getProfileByUserId(String userId) {
+
+        UserProfile user = userProfileRepository.findById(userId)
+                .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND, userId));
+
+        return profileMapper.toProfileResponse(user);
     }
 
 }

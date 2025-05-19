@@ -2,7 +2,7 @@ package com.book.identityservice.service.impl;
 
 import com.book.identityservice.dto.event.UpdateEmailEvent;
 import com.book.identityservice.dto.request.*;
-import com.book.identityservice.dto.response.CreatedProfileResponse;
+import com.book.identityservice.dto.response.ProfileResponse;
 import com.book.identityservice.entity.User;
 import com.book.identityservice.exception.CustomException;
 import com.book.identityservice.exception.ErrorCode;
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public CreatedProfileResponse createUser(UserCreationRequest request) {
+    public ProfileResponse createUser(UserCreationRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail()))
             throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS, request.getEmail());
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public CreatedProfileResponse createAdmin(AdminCreationRequest adminCreationRequest) {
+    public ProfileResponse createAdmin(AdminCreationRequest adminCreationRequest) {
         if (userRepository.existsByEmail(adminCreationRequest.getEmail()))
             throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS, adminCreationRequest.getEmail());
 
@@ -192,6 +192,5 @@ public class UserServiceImpl implements UserService {
         if (!tokenInCache.equals(token))
             throw new CustomException(ErrorCode.RESET_PASSWORD_TOKEN_INCORRECT);
     }
-
 
 }

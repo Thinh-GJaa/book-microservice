@@ -2,8 +2,7 @@ package com.book.identityservice.controller;
 
 import com.book.identityservice.dto.ApiResponse;
 import com.book.identityservice.dto.request.AdminCreationRequest;
-import com.book.identityservice.dto.request.UserCreationRequest;
-import com.book.identityservice.dto.response.CreatedProfileResponse;
+import com.book.identityservice.dto.response.ProfileResponse;
 import com.book.identityservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -26,8 +25,8 @@ public class AdminController {
     UserService userService;
 
     @PostMapping("/admin")
-    ResponseEntity<ApiResponse<CreatedProfileResponse>> createUser(@RequestBody @Valid AdminCreationRequest request) {
-        ApiResponse<CreatedProfileResponse> response = ApiResponse.<CreatedProfileResponse>builder()
+    ResponseEntity<ApiResponse<ProfileResponse>> createUser(@RequestBody @Valid AdminCreationRequest request) {
+        ApiResponse<ProfileResponse> response = ApiResponse.<ProfileResponse>builder()
                 .message("Create profile successfully")
                 .data(userService.createAdmin(request))
                 .build();

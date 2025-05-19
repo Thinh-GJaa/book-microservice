@@ -4,7 +4,7 @@ import com.book.identityservice.dto.ApiResponse;
 import com.book.identityservice.dto.request.ChangePasswordRequest;
 import com.book.identityservice.dto.request.ResetPasswordRequets;
 import com.book.identityservice.dto.request.UserCreationRequest;
-import com.book.identityservice.dto.response.CreatedProfileResponse;
+import com.book.identityservice.dto.response.ProfileResponse;
 import com.book.identityservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -26,7 +26,7 @@ public class UserController {
 
     @PostMapping("/users")
     ResponseEntity<ApiResponse<?>> createUser(@RequestBody @Valid UserCreationRequest request) {
-        ApiResponse<CreatedProfileResponse> response = ApiResponse.<CreatedProfileResponse>builder()
+        ApiResponse<ProfileResponse> response = ApiResponse.<ProfileResponse>builder()
                 .message("Create profile successfully")
                 .data(userService.createUser(request))
                 .build();

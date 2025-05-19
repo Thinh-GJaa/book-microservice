@@ -3,7 +3,7 @@ package com.book.profileservice.controller;
 
 import com.book.profileservice.dto.ApiResponse;
 import com.book.profileservice.dto.request.ProfileCreationRequest;
-import com.book.profileservice.dto.response.CreatedProfileResponse;
+import com.book.profileservice.dto.response.ProfileResponse;
 import com.book.profileservice.service.UserProfileService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -24,7 +24,7 @@ public class InternalUserProfileController {
 
     @PostMapping("/users")
     public ApiResponse<?> createProfileUser(@Valid @RequestBody ProfileCreationRequest request) {
-        return ApiResponse.<CreatedProfileResponse>builder()
+        return ApiResponse.<ProfileResponse>builder()
                 .message("Created profile user successfully")
                 .data(userProfileService.createProfile(request))
                 .build();

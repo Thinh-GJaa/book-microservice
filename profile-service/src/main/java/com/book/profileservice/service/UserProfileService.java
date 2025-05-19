@@ -1,17 +1,19 @@
 package com.book.profileservice.service;
 
-import com.book.profileservice.dto.event.UpdateEmailEvent;
 import com.book.profileservice.dto.request.ProfileCreationRequest;
 import com.book.profileservice.dto.request.UpdateProfileRequest;
-import com.book.profileservice.dto.response.CreatedProfileResponse;
-import com.book.profileservice.dto.response.MyProfileResponse;
-import com.book.profileservice.dto.response.UpdateProfileResponse;
-import com.nimbusds.openid.connect.sdk.UserInfoResponse;
+import com.book.profileservice.dto.response.ProfileResponse;
 
 public interface UserProfileService {
-    CreatedProfileResponse createProfile(ProfileCreationRequest request);
+    ProfileResponse createProfile(ProfileCreationRequest request);
 
-    MyProfileResponse getMyProfile();
+    ProfileResponse getMyProfile();
 
-    UpdateProfileResponse updateMyProfile(UpdateProfileRequest updateProfileRequest);
+    ProfileResponse updateMyProfile(UpdateProfileRequest updateProfileRequest);
+
+    ProfileResponse getProfileByUserId(String userId);
+
+
+
+
 }
