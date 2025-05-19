@@ -73,13 +73,4 @@ public class AuthenticationController {
                 return new ResponseEntity<>(apiResponse, HttpStatus.NO_CONTENT);
         }
 
-        @PutMapping("/change-password")
-        public ResponseEntity<ApiResponse<?>> changePassword(
-                        @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
-                authenticationService.changePassword(changePasswordRequest);
-                ApiResponse<Void> apiResponse = ApiResponse.<Void>builder().message("Change password successfully")
-                                .build();
-                return ResponseEntity.ok(apiResponse);
-        }
-
 }

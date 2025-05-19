@@ -293,26 +293,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new CustomException(ErrorCode.JWT_VERIFY_ERROR);
         }
     }
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    @Override
-    public void changePassword(ChangePasswordRequest changePasswordRequest) {
 
-        var context = SecurityContextHolder.getContext();
-        String userId = context.getAuthentication().getName();
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USERNAME_NOT_FOUND, userId));
 
-        if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword()))
-            throw new CustomException(ErrorCode.CONFIRM_PASSWORD_NOT_MATCH);
-
-        if (!passwordEncoder.matches(changePasswordRequest.getPassword(), user.getPassword()))
-            throw new CustomException(ErrorCode.PASSWORD_INCORRECT);
-
-        user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
-
-        userRepository.save(user);
-        log.info("Thay đổi mật khẩu thành công");
-    }
 
 }

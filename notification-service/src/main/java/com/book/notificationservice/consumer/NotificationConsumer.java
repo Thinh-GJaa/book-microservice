@@ -28,7 +28,19 @@ public class NotificationConsumer {
 
         emailService.send(event.getRecipient(), event. getSubject(), event.getBody());
 
-        log.info("Thinh, event: {}", parser.parseToEvent(eventJson, NotificationEvent.class));
+        log.info("create-profile-topic : {}", event);
+
+    }
+
+
+    @KafkaListener(topics = "password-reset-topic")
+    public void listenResetPasswordEvent(String eventJson){
+
+        NotificationEvent event = parser.parseToEvent(eventJson, NotificationEvent.class);
+
+        emailService.send(event.getRecipient(), event. getSubject(), event.getBody());
+
+        log.info("password-reset-topic: {}", parser.parseToEvent(eventJson, NotificationEvent.class));
 
     }
 }

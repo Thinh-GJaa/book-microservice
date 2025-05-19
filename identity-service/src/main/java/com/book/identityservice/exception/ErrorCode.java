@@ -107,7 +107,15 @@ public enum ErrorCode {
     JWT_VERIFY_ERROR(12202, HttpStatus.UNAUTHORIZED, "Failed to verify JWT"),
     JWT_ISSUER_INVALID(12203, HttpStatus.UNAUTHORIZED, "JWT issuer is invalid"),
     JWT_AUDIENCE_INVALID(12204, HttpStatus.UNAUTHORIZED, "JWT audience is invalid"),
-    JWT_CLAIM_INVALID(12205, HttpStatus.BAD_REQUEST, "JWT claim '{}' is invalid");
+    JWT_CLAIM_INVALID(12205, HttpStatus.BAD_REQUEST, "JWT claim '{}' is invalid"),
+
+    RESET_PASSWORD_TOKEN_NOT_EXISTS(12300, HttpStatus.NOT_FOUND, "Reset password token not exists or expired"),
+    RESET_PASSWORD_TOKEN_INCORRECT(12301, HttpStatus.UNAUTHORIZED, "Reset password token incorrect");
+
+
+
+
+
 
     private final int code;
     private final HttpStatus status;

@@ -35,7 +35,11 @@ public class SecurityConfig {
             "/auth/logout",
             "/auth/refresh",
             "/auth/users",
-            "/auth/admin"
+            "/auth/admin",
+            "/auth/forgot-password",
+            "/auth/verify-reset-password-link",
+            "/auth/reset-password"
+
     };
 
     private final CustomJwtDecoder customJwtDecoder;

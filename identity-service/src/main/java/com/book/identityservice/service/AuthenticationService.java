@@ -25,6 +25,5 @@ public interface AuthenticationService {
             throws ParseException, JOSEException;
 
 
-    void changePassword(ChangePasswordRequest changePasswordRequest);
 
 }
