@@ -9,6 +9,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +55,18 @@ public class UserProfileController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<?> getProfiles(
+            @RequestParam(required = false, defaultValue = "") String keyword,
+            @PageableDefault(size = 10, sort = "lastName", direction = Sort.Direction.ASC) Pageable pageable) {
 
+        ApiResponse<?> apiResponse = ApiResponse.builder()
+                .message("Success")
+                .data(userProfileService.getProfiles(keyword, pageable))
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
 
 
 }

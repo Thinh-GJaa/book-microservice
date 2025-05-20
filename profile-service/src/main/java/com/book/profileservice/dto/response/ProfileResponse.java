@@ -5,6 +5,7 @@ import com.book.profileservice.enums.Gender;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
@@ -12,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProfileResponse {
+public class ProfileResponse implements Serializable {
     String userId;
     String email;
     String phoneNumber;

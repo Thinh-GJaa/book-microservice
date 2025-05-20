@@ -14,6 +14,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -93,6 +96,18 @@ public class UserProfileServiceImpl implements UserProfileService {
                 .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND, userId));
 
         return profileMapper.toProfileResponse(user);
+    }
+
+    @Override
+    @Cacheable(value = "profiles", key = "#keyword + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort.toString()"
+            ,condition = "#pageable.pageNumber < 2" // Chỉ cache nếu trang < 3 (tức 3 trang đầu)
+            , unless = "#result.isEmpty()")
+    public Page<ProfileResponse> getProfiles(String keyword, Pageable pageable) {
+        Page<UserProfile> profiles = userProfileRepository
+                .findByLastNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
+                        keyword, keyword, pageable);
+
+        return profiles.map(profileMapper::toProfileResponse);
     }
 
 }

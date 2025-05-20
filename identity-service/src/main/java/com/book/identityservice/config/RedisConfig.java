@@ -8,39 +8,28 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @EnableCaching
 public class RedisConfig {
 
+    //Cấu hình riêng cho từng cache
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+        Map<String, RedisCacheConfiguration> cacheConfigs = new HashMap<>();
 
-        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(30)) // TTL = 30 phút
-                .disableCachingNullValues();
+        cacheConfigs.put("products", RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(30)));
+
+        cacheConfigs.put("profiles", RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(5)));
 
         return RedisCacheManager.builder(connectionFactory)
-                .cacheDefaults(config)
+                .withInitialCacheConfigurations(cacheConfigs)
+                .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
                 .build();
     }
-
-
-    //Cấu hình riêng cho từng cache
-//    @Bean
-//    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-//        Map<String, RedisCacheConfiguration> cacheConfigs = new HashMap<>();
-//
-//        cacheConfigs.put("products", RedisCacheConfiguration.defaultCacheConfig()
-//                .entryTtl(Duration.ofMinutes(30)));
-//
-//        cacheConfigs.put("users", RedisCacheConfiguration.defaultCacheConfig()
-//                .entryTtl(Duration.ofHours(1)));
-//
-//        return RedisCacheManager.builder(connectionFactory)
-//                .withInitialCacheConfigurations(cacheConfigs)
-//                .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
-//                .build();
-//    }
 
 }
