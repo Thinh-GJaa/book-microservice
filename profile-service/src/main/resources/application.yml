@@ -33,6 +33,13 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
 
+    cache:
+      type: redis
+      redis:
+        host: localhost
+        port: 6379
+        timeout: 60000
+        #password: yourpassword
 eureka:
   client:
     register-with-eureka: true
