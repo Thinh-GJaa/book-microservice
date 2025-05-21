@@ -28,11 +28,6 @@ public class Product {
     @Column(nullable = false)
     String title;
 
-    // Quan hệ nhiều-nhiều với Author
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "product_authors", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "author_id"))
-    Set<Author> authors = new HashSet<>();
-
     String publisher;
 
     @Column(name = "publish_year")
@@ -50,6 +45,10 @@ public class Product {
 
     @Column(name = "update_date")
     private LocalDateTime updateDate;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "product_authors", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "author_id"))
+    Set<Author> authors = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
