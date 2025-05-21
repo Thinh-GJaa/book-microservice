@@ -31,7 +31,6 @@ public class Author {
     @Enumerated(EnumType.STRING)
     Gender gender;
 
-    // Thêm thuộc tính cho tác giả
     LocalDate birthDate;
 
     String nationality;
