@@ -21,13 +21,6 @@ public class ErrorResponse {
     List<FieldError> fieldErrors;
     OffsetDateTime timestamp;
 
-    @Getter
-    @Builder
-    public static class FieldError {
-        private String field;
-        private String message;
-    }
-
     public static ErrorResponse of(String errorCode, HttpStatus status, String message, List<FieldError> fieldErrors) {
         return ErrorResponse.builder()
                 .errorCode(errorCode)
@@ -36,5 +29,12 @@ public class ErrorResponse {
                 .fieldErrors(fieldErrors)
                 .timestamp(OffsetDateTime.now())
                 .build();
+    }
+
+    @Getter
+    @Builder
+    public static class FieldError {
+        private String field;
+        private String message;
     }
 }

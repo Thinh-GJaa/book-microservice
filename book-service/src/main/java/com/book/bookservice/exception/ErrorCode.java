@@ -113,10 +113,6 @@ public enum ErrorCode {
     RESET_PASSWORD_TOKEN_INCORRECT(12301, HttpStatus.UNAUTHORIZED, "Reset password token incorrect");
 
 
-
-
-
-
     private final int code;
     private final HttpStatus status;
     private final String messageTemplate;
