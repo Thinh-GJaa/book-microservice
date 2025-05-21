@@ -20,10 +20,10 @@ public class RedisConfig {
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         Map<String, RedisCacheConfiguration> cacheConfigs = new HashMap<>();
 
-        cacheConfigs.put("products", RedisCacheConfiguration.defaultCacheConfig()
+        cacheConfigs.put("tmp", RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(30)));
 
-        cacheConfigs.put("profiles", RedisCacheConfiguration.defaultCacheConfig()
+        cacheConfigs.put("categories", RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(5)));
 
         return RedisCacheManager.builder(connectionFactory)

@@ -58,7 +58,7 @@ public class UserProfileController {
     @GetMapping("/list")
     public ResponseEntity<?> getProfiles(
             @RequestParam(required = false, defaultValue = "") String keyword,
-            @PageableDefault(size = 10, sort = "lastName", direction = Sort.Direction.ASC) Pageable pageable) {
+            @PageableDefault(page = 0, size = 10, sort = "lastName", direction = Sort.Direction.ASC) Pageable pageable) {
 
         ApiResponse<?> apiResponse = ApiResponse.builder()
                 .message("Success")

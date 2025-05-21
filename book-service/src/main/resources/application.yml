@@ -1,12 +1,15 @@
 server:
   port: 8083
+  servlet:
+    context-path: /books
+
 
 spring:
   application:
     name: book-service
 
   datasource:
-    url: jdbc:mysql://localhost:3306/book-service
+    url: jdbc:mysql://localhost:3306/book_service?createDatabaseIfNotExist=true
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver

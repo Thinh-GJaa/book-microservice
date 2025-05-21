@@ -248,7 +248,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .issueTime(new Date())
                     .expirationTime(expiryTime)
                     .jwtID(tokenId)
-                    .claim("role", "ROLE_"+ user.getRole())
+                    .claim("role", "ROLE_" + user.getRole())
                     .build();
 
             JWSObject jwsObject = new JWSObject(header, new Payload(claimsSet.toJSONObject()));

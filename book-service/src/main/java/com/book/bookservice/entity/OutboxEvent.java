@@ -1,6 +1,6 @@
 package com.book.bookservice.entity;
 
-import com.book.identityservice.enums.OutboxEventStatus;
+import com.book.bookservice.enums.OutboxEventStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
