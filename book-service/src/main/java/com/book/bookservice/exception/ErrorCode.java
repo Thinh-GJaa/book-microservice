@@ -16,9 +16,10 @@ public enum ErrorCode {
 
     // Product-related errors
     PRODUCT_NAME_ALREADY_EXISTS(10200, HttpStatus.CONFLICT, "Product name '{}' already exists"),
-    PRODUCT_NOT_FOUND(10201, HttpStatus.NOT_FOUND, "Product with ID '{}' not found"),
-    PRODUCT_ALREADY_IN_CART(10202, HttpStatus.CONFLICT, "Product with ID '{}' is already in cart"),
-    PRODUCT_OUT_OF_STOCK(10203, HttpStatus.NOT_FOUND, "Product with ID '{}' has been sold out"),
+    PRODUCT_ISBN_EXISTED(10201, HttpStatus.CONFLICT, "Product ISBN '{}' already exists"),
+    PRODUCT_NOT_FOUND(10202, HttpStatus.NOT_FOUND, "Product with ID '{}' not found"),
+    PRODUCT_ALREADY_IN_CART(10203, HttpStatus.CONFLICT, "Product with ID '{}' is already in cart"),
+    PRODUCT_OUT_OF_STOCK(10204, HttpStatus.NOT_FOUND, "Product with ID '{}' has been sold out"),
 
     // User-related errors
     EMAIL_ALREADY_EXISTS(10300, HttpStatus.CONFLICT, "Email '{}' already exists"),
@@ -112,10 +113,8 @@ public enum ErrorCode {
     // Author-related errors
     AUTHOR_NOT_FOUND(11400, HttpStatus.NOT_FOUND, "Author with ID '{}' not found"),
 
-
     RESET_PASSWORD_TOKEN_NOT_EXISTS(12300, HttpStatus.NOT_FOUND, "Reset password token not exists or expired"),
     RESET_PASSWORD_TOKEN_INCORRECT(12301, HttpStatus.UNAUTHORIZED, "Reset password token incorrect");
-
 
     private final int code;
     private final HttpStatus status;
