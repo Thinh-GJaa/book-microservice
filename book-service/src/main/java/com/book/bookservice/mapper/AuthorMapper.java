@@ -1,23 +1,19 @@
 package com.book.bookservice.mapper;
 
 import com.book.bookservice.dto.request.CreateAuthorRequest;
-import com.book.bookservice.dto.request.CreateCategoryRequest;
 import com.book.bookservice.dto.request.UpdateAuthorRequest;
-import com.book.bookservice.dto.request.UpdateCategoryRequest;
 import com.book.bookservice.dto.response.AuthorResponse;
-import com.book.bookservice.dto.response.CategoryResponse;
 import com.book.bookservice.entity.Author;
-import com.book.bookservice.entity.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface AuthorMapper {
+    Author toAuthor(CreateAuthorRequest request);
 
-    Author toAuthor(CreateAuthorRequest createAuthorRequest);
+    void updateAuthor(@MappingTarget Author author, UpdateAuthorRequest request);
 
-    Author updateAuthor(@MappingTarget Author author, UpdateAuthorRequest request);
-
-    AuthorResponse toAuthorResponse(Author author);
+    AuthorResponse toAuthorResponse(Author Author);
 
 }

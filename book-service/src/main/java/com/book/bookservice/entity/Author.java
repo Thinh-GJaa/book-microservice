@@ -25,7 +25,7 @@ public class Author {
     @GenericGenerator(name = "uuid-generator", strategy = "uuid2")
     String authorId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     String authorName;
 
     @Enumerated(EnumType.STRING)
