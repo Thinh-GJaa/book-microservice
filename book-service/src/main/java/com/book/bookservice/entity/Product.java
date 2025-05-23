@@ -33,31 +33,32 @@ public class Product {
     @Column(name = "publish_year")
     Integer publishYear;
 
-    @Column(name = "isbn", unique = true)
-    String isbn; // Định danh sách toàn cầu
+    @Column(name = "isbn", unique = true, nullable = false)
+    String isbn;
 
+    @Column(nullable = false)
     BigDecimal price;
 
     String language;
 
-    @Column(name = "create_date")
-    private LocalDateTime createDate;
+    @Column(name = "create_date", updatable = false)
+    LocalDateTime createDate;
 
     @Column(name = "update_date")
-    private LocalDateTime updateDate;
+    LocalDateTime updateDate;
 
+    @Builder.Default
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "product_authors", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "author_id"))
     Set<Author> authors = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "category_id", nullable = false)
+    Category category;
 
-    // Xóa trường image, chỉ giữ coverImage hoặc đổi tên cho phù hợp
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id")
-    private Image coverImage;
+    Image coverImage;
 
     @PrePersist
     protected void onCreate() {

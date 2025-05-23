@@ -15,24 +15,36 @@ import java.util.Map;
 @EnableCaching
 public class RedisConfig {
 
-    //Cấu hình riêng cho từng cache
-    @Bean
-    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        Map<String, RedisCacheConfiguration> cacheConfigs = new HashMap<>();
+        // Cấu hình riêng cho từng cache
+        @Bean
+        public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+                Map<String, RedisCacheConfiguration> cacheConfigs = new HashMap<>();
 
-        cacheConfigs.put("categories", RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(10)));
+                cacheConfigs.put("categories", RedisCacheConfiguration.defaultCacheConfig()
+                                .entryTtl(Duration.ofMinutes(10)));
 
-        cacheConfigs.put("author", RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(10)));
+                cacheConfigs.put("author", RedisCacheConfiguration.defaultCacheConfig()
+                                .entryTtl(Duration.ofMinutes(10)));
 
-        cacheConfigs.put("authors", RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(30)));
+                cacheConfigs.put("authors", RedisCacheConfiguration.defaultCacheConfig()
+                                .entryTtl(Duration.ofMinutes(30)));
 
-        return RedisCacheManager.builder(connectionFactory)
-                .withInitialCacheConfigurations(cacheConfigs)
-                .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
-                .build();
-    }
+                cacheConfigs.put("product", RedisCacheConfiguration.defaultCacheConfig()
+                                .entryTtl(Duration.ofMinutes(30)));
+
+                cacheConfigs.put("products", RedisCacheConfiguration.defaultCacheConfig()
+                                .entryTtl(Duration.ofMinutes(30)));
+
+                cacheConfigs.put("products_by_category", RedisCacheConfiguration.defaultCacheConfig()
+                                .entryTtl(Duration.ofMinutes(30)));
+
+                cacheConfigs.put("products_by_author", RedisCacheConfiguration.defaultCacheConfig()
+                                .entryTtl(Duration.ofMinutes(30)));
+
+                return RedisCacheManager.builder(connectionFactory)
+                                .withInitialCacheConfigurations(cacheConfigs)
+                                .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
+                                .build();
+        }
 
 }

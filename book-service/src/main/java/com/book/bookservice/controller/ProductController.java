@@ -66,5 +66,27 @@ public class ProductController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @GetMapping("/by-category/{categoryId}")
+    public ResponseEntity<ApiResponse<?>> getProductsByCategory(
+            @PathVariable String categoryId,
+            @PageableDefault(page = 0, size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
+        ApiResponse<Page<ProductResponse>> apiResponse = ApiResponse.<Page<ProductResponse>>builder()
+                .message("Get products by category successfully")
+                .data(productService.getProductsByCategory(categoryId, pageable))
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/by-author/{authorId}")
+    public ResponseEntity<ApiResponse<?>> getProductsByAuthor(
+            @PathVariable String authorId,
+            @PageableDefault(page = 0, size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
+        ApiResponse<Page<ProductResponse>> apiResponse = ApiResponse.<Page<ProductResponse>>builder()
+                .message("Get products by author successfully")
+                .data(productService.getProductsByAuthor(authorId, pageable))
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
 
 }
