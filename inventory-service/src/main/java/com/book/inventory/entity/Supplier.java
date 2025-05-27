@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "suppliers", indexes = { @Index(name = "idx_supplier_name", columnList = "nameSupplier") })
+@Table(name = "suppliers", indexes = { @Index(name = "idx_supplier_name", columnList = "supplierName") })
 public class Supplier extends VersionEntity {
     @Id
     @GeneratedValue(generator = "uuid-generator")
@@ -23,7 +23,7 @@ public class Supplier extends VersionEntity {
     String supplierId;
 
     @Column(nullable = false, unique = true, length = 100)
-    String nameSupplier;
+    String supplierName; // Tên nhà cung cấp
 
     @Column(length = 255)
     String contactName; // Tên người liên hệ chính của nhà cung cấp

@@ -12,7 +12,7 @@ import java.io.Serializable;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SupplierResponse implements Serializable {
     String supplierId;
-    String nameSupplier;
+    String supplierName;
     String contactName;
     String phoneNumber;
     String email;

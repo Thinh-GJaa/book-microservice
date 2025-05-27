@@ -14,7 +14,7 @@ public class UpdateSupplierRequest {
     @NotBlank(message = "Supplier ID is required")
     String supplierId;
 
-    String nameSupplier;
+    String supplierName;
     String contactName;
     String phoneNumber;
     String email;

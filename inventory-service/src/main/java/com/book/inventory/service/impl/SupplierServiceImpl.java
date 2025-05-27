@@ -36,8 +36,8 @@ public class SupplierServiceImpl implements SupplierService {
             throw new CustomException(ErrorCode.SUPPLIER_EMAIL_ALREADY_EXISTS, request.getEmail());
         }
 
-        if (supplierRepository.existsByNameSupplier(request.getNameSupplier())) {
-            throw new CustomException(ErrorCode.SUPPLIER_NAME_ALREADY_EXISTS, request.getNameSupplier());
+        if (supplierRepository.existsBySupplierName(request.getSupplierName())) {
+            throw new CustomException(ErrorCode.SUPPLIER_NAME_ALREADY_EXISTS, request.getSupplierName());
         }
 
         if (supplierRepository.existsByPhoneNumber(request.getPhoneNumber())) {
@@ -71,10 +71,10 @@ public class SupplierServiceImpl implements SupplierService {
         }
 
         // Kiểm tra trùng tên nếu thay đổi và khác supplier hiện tại
-        if (request.getNameSupplier() != null
-                && !request.getNameSupplier().equals(supplier.getNameSupplier())
-                && supplierRepository.existsByNameSupplier(request.getNameSupplier())) {
-            throw new CustomException(ErrorCode.SUPPLIER_NAME_ALREADY_EXISTS, request.getNameSupplier());
+        if (request.getSupplierName() != null
+                && !request.getSupplierName().equals(supplier.getSupplierName())
+                && supplierRepository.existsBySupplierName(request.getSupplierName())) {
+            throw new CustomException(ErrorCode.SUPPLIER_NAME_ALREADY_EXISTS, request.getSupplierName());
         }
 
         // Kiểm tra trùng số điện thoại nếu thay đổi và khác supplier hiện tại
@@ -93,7 +93,7 @@ public class SupplierServiceImpl implements SupplierService {
     @Cacheable(value = "products", key = "#keyword + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort.toString()", condition = "#pageable.pageNumber < 2", unless = "#result.isEmpty()")
     public Page<SupplierResponse> searchSuppliers(String keyword, Pageable pageable) {
         Page<Supplier> suppliers = supplierRepository
-                .findByNameSupplierContainingIgnoreCaseOrContactNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
+                .findBySupplierNameContainingIgnoreCaseOrContactNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
                         keyword, keyword, keyword, pageable);
         return suppliers.map(supplierMapper::toSupplierResponse);
     }

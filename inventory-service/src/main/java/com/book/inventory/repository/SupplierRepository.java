@@ -11,10 +11,10 @@ public interface SupplierRepository extends JpaRepository<Supplier, String> {
 
     boolean existsByEmail(String email);
 
-    boolean existsByNameSupplier(String nameSupplier);
+    boolean existsBySupplierName(String supplierName);
 
     boolean existsByPhoneNumber(String phoneNumber);
 
-    Page<Supplier> findByNameSupplierContainingIgnoreCaseOrContactNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
+    Page<Supplier> findBySupplierNameContainingIgnoreCaseOrContactNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
             String nameSupplier, String contactName, String email, Pageable pageable);
 }
