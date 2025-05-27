@@ -20,26 +20,17 @@ public class RedisConfig {
         public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
                 Map<String, RedisCacheConfiguration> cacheConfigs = new HashMap<>();
 
-                cacheConfigs.put("categories", RedisCacheConfiguration.defaultCacheConfig()
+                cacheConfigs.put("supplier", RedisCacheConfiguration.defaultCacheConfig()
                                 .entryTtl(Duration.ofMinutes(10)));
 
-                cacheConfigs.put("author", RedisCacheConfiguration.defaultCacheConfig()
-                                .entryTtl(Duration.ofMinutes(10)));
+                cacheConfigs.put("suppliers", RedisCacheConfiguration.defaultCacheConfig()
+                        .entryTtl(Duration.ofMinutes(10)));
 
-                cacheConfigs.put("authors", RedisCacheConfiguration.defaultCacheConfig()
-                                .entryTtl(Duration.ofMinutes(30)));
+                cacheConfigs.put("warehouse", RedisCacheConfiguration.defaultCacheConfig()
+                        .entryTtl(Duration.ofMinutes(10)));
 
-                cacheConfigs.put("product", RedisCacheConfiguration.defaultCacheConfig()
-                                .entryTtl(Duration.ofMinutes(30)));
-
-                cacheConfigs.put("products", RedisCacheConfiguration.defaultCacheConfig()
-                                .entryTtl(Duration.ofMinutes(30)));
-
-                cacheConfigs.put("products_by_category", RedisCacheConfiguration.defaultCacheConfig()
-                                .entryTtl(Duration.ofMinutes(30)));
-
-                cacheConfigs.put("products_by_author", RedisCacheConfiguration.defaultCacheConfig()
-                                .entryTtl(Duration.ofMinutes(30)));
+                cacheConfigs.put("warehouses", RedisCacheConfiguration.defaultCacheConfig()
+                        .entryTtl(Duration.ofMinutes(10)));
 
                 return RedisCacheManager.builder(connectionFactory)
                                 .withInitialCacheConfigurations(cacheConfigs)

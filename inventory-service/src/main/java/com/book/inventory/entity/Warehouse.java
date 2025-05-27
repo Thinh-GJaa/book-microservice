@@ -16,7 +16,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "warehouses", uniqueConstraints = { @UniqueConstraint(columnNames = "code") }, indexes = {
-        @Index(name = "idx_warehouse_name", columnList = "name") })
+        @Index(name = "idx_warehouse_name", columnList = "warehouseName") })
 public class Warehouse extends VersionEntity {
     @Id
     @GeneratedValue(generator = "uuid-generator")
