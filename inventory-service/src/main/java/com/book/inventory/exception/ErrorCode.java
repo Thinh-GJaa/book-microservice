@@ -114,7 +114,17 @@ public enum ErrorCode {
     AUTHOR_NOT_FOUND(11400, HttpStatus.NOT_FOUND, "Author with ID '{}' not found"),
 
     RESET_PASSWORD_TOKEN_NOT_EXISTS(12300, HttpStatus.NOT_FOUND, "Reset password token not exists or expired"),
-    RESET_PASSWORD_TOKEN_INCORRECT(12301, HttpStatus.UNAUTHORIZED, "Reset password token incorrect");
+    RESET_PASSWORD_TOKEN_INCORRECT(12301, HttpStatus.UNAUTHORIZED, "Reset password token incorrect"),
+
+    // Supplier-related errors
+    SUPPLIER_NOT_FOUND(13000, HttpStatus.NOT_FOUND, "Supplier with ID '{}' not found"),
+    SUPPLIER_NAME_ALREADY_EXISTS(13001, HttpStatus.CONFLICT, "Supplier name '{}' already exists"),
+    SUPPLIER_PHONE_ALREADY_EXISTS(13002, HttpStatus.CONFLICT, "Supplier phone '{}' already exists"),
+    SUPPLIER_EMAIL_ALREADY_EXISTS(13003, HttpStatus.CONFLICT, "Supplier email '{}' already exists"),
+
+    // Warehouse-related errors
+    WAREHOUSE_NOT_FOUND(14000, HttpStatus.NOT_FOUND, "Warehouse with ID '{}' not found"),
+    WAREHOUSE_NAME_ALREADY_EXISTS(14001, HttpStatus.CONFLICT, "Warehouse name '{}' already exists");
 
     private final int code;
     private final HttpStatus status;
