@@ -58,7 +58,7 @@ public class SupplierController {
             @RequestParam(required = false, defaultValue = "") String keyword,
             @PageableDefault(page = 0, size = 10, sort = "nameSupplier", direction = Sort.Direction.ASC) Pageable pageable) {
         ApiResponse<Page<SupplierResponse>> apiResponse = ApiResponse.<Page<SupplierResponse>>builder()
-                .message("Get authors successfully")
+                .message("Get suppliers successfully")
                 .data(supplierService.searchSuppliers(keyword, pageable))
                 .build();
         return ResponseEntity.ok(apiResponse);

@@ -12,6 +12,10 @@ import com.book.inventory.service.SupplierService;
 import lombok.RequiredArgsConstructor;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +29,7 @@ public class SupplierServiceImpl implements SupplierService {
     SupplierMapper supplierMapper;
 
     @Override
+    @CacheEvict(value = {"suppliers"}, allEntries = true)
     public SupplierResponse createSupplier(CreateSupplierRequest request) {
 
         if (supplierRepository.existsByEmail(request.getEmail())) {
@@ -45,6 +50,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
+    @Cacheable(value = "supplier", key = "#supplierId")
     public SupplierResponse getSupplierById(String supplierId) {
         Supplier supplier = supplierRepository.findById(supplierId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SUPPLIER_NOT_FOUND, supplierId));
@@ -52,6 +58,8 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
+    @Caching(put = @CachePut(value = "supplier", key = "#request.supplierId"),
+            evict = @CacheEvict(value = {"suppliers",}, allEntries = true))
     public SupplierResponse updateSupplier(UpdateSupplierRequest request) {
         Supplier supplier = supplierRepository.findById(request.getSupplierId())
                 .orElseThrow(() -> new CustomException(ErrorCode.SUPPLIER_NOT_FOUND, request.getSupplierId()));
@@ -82,6 +90,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
+    @Cacheable(value = "products", key = "#keyword + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort.toString()", condition = "#pageable.pageNumber < 2", unless = "#result.isEmpty()")
     public Page<SupplierResponse> searchSuppliers(String keyword, Pageable pageable) {
         Page<Supplier> suppliers = supplierRepository
                 .findByNameSupplierContainingIgnoreCaseOrContactNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
