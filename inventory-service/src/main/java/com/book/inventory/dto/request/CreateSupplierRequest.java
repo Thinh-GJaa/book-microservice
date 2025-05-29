@@ -14,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 public class CreateSupplierRequest {
 
     @NotBlank(message = "Supplier name is required")
-    String nameSupplier;
+    String supplierName;
 
     @NotBlank(message = "Contact name is required")
     String contactName;

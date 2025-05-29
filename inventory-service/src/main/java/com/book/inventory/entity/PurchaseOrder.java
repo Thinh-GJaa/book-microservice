@@ -32,9 +32,6 @@ public class PurchaseOrder extends VersionEntity {
     @Column(length = 1000)
     String note;
 
-    @Column(nullable = false)
-    LocalDateTime orderDate;
-
     @Column(precision = 18, scale = 2)
     BigDecimal totalAmount;
 
