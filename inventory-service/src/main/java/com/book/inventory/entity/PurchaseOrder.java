@@ -25,10 +25,6 @@ public class PurchaseOrder extends VersionEntity {
     @GenericGenerator(name = "uuid-generator", strategy = "uuid2")
     String purchaseOrderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "supplier_id", nullable = false)
-    Supplier supplier;
-
     @Column(length = 1000)
     String note;
 
@@ -41,9 +37,18 @@ public class PurchaseOrder extends VersionEntity {
     @Column(nullable = false)
     LocalDateTime updatedDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "supplier_id", nullable = false)
+    Supplier supplier;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "warehouse_id", nullable = false)
+    Warehouse warehouse;
+
     @Column(nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
-    PurchaseOrderStatus status;
+            @Builder.Default
+    PurchaseOrderStatus status = PurchaseOrderStatus.PENDING;
 
     @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     List<PurchaseOrderDetail> details;

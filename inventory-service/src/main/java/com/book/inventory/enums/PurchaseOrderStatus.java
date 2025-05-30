@@ -4,7 +4,6 @@ public enum PurchaseOrderStatus {
     PENDING,        // Đơn hàng mới tạo, chưa xử lý
     APPROVED,       // Đơn hàng đã được phê duyệt
     REJECTED,       // Đơn hàng bị từ chối
-    IN_PROGRESS,    // Đơn hàng đang được xử lý
     COMPLETED,      // Đơn hàng đã hoàn thành
     CANCELLED       // Đơn hàng đã bị hủy
 }

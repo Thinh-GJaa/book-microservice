@@ -20,6 +20,8 @@ public enum ErrorCode {
     PRODUCT_NOT_FOUND(10202, HttpStatus.NOT_FOUND, "Product with ID '{}' not found"),
     PRODUCT_ALREADY_IN_CART(10203, HttpStatus.CONFLICT, "Product with ID '{}' is already in cart"),
     PRODUCT_OUT_OF_STOCK(10204, HttpStatus.NOT_FOUND, "Product with ID '{}' has been sold out"),
+    DUPLICATE_PRODUCT_ID_IN_ORDER(10205, HttpStatus.BAD_REQUEST, "Duplicate productId in order details"),
+    INVALID_PRODUCT_ID(10206, HttpStatus.BAD_REQUEST, "Invalid productId(s): {}"),
 
     // User-related errors
     EMAIL_ALREADY_EXISTS(10300, HttpStatus.CONFLICT, "Email '{}' already exists"),
@@ -79,6 +81,7 @@ public enum ErrorCode {
     ORDER_CANCELLATION_NOT_ALLOWED(11202, HttpStatus.FORBIDDEN, "Order with ID '{}' cannot be canceled"),
     INVALID_ORDER_STATUS(11203, HttpStatus.BAD_REQUEST, "Invalid order status '{}'"),
     PAYMENT_FAILED(11204, HttpStatus.PAYMENT_REQUIRED, "Payment for order with ID '{}' failed"),
+    PURCHASE_ORDER_NOT_FOUND(11205, HttpStatus.NOT_FOUND, "Purchase order with ID '{}' not found"),
 
     // Customer-related errors
     CUSTOMER_NOT_FOUND(11300, HttpStatus.NOT_FOUND, "Customer with ID '{}' not found"),
