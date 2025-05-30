@@ -21,6 +21,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -101,4 +105,19 @@ public class ProductServiceImpl implements ProductService {
 
         return products.map(productMapper::toProductResponse);
     }
+
+    @Override
+    public Set<String> checkInvalidProductIds(Set<String> productIds) {
+        // Tập hợp các ID tồn tại trong DB
+        Set<String> existingIds = productRepository.findAllById(productIds).stream()
+                .map(Product::getProductId)
+                .collect(Collectors.toSet());
+
+        // Tạo tập mới chứa ID không tồn tại (invalid)
+        Set<String> invalidIds = new HashSet<>(productIds);
+        invalidIds.removeAll(existingIds); // Loại bỏ những ID tồn tại
+
+        return invalidIds;
+    }
+
 }

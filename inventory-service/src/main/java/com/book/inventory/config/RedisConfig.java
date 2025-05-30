@@ -32,6 +32,12 @@ public class RedisConfig {
                 cacheConfigs.put("warehouses", RedisCacheConfiguration.defaultCacheConfig()
                         .entryTtl(Duration.ofMinutes(10)));
 
+                cacheConfigs.put("purchaseOrder", RedisCacheConfiguration.defaultCacheConfig()
+                        .entryTtl(Duration.ofMinutes(10)));
+
+                cacheConfigs.put("purchaseOrders", RedisCacheConfiguration.defaultCacheConfig()
+                        .entryTtl(Duration.ofMinutes(10)));
+
                 return RedisCacheManager.builder(connectionFactory)
                                 .withInitialCacheConfigurations(cacheConfigs)
                                 .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())

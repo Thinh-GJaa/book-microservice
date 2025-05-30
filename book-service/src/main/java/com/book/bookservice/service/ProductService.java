@@ -6,6 +6,8 @@ import com.book.bookservice.dto.response.ProductResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Set;
+
 public interface ProductService {
 
     ProductResponse getProductById(String productId);
@@ -19,4 +21,6 @@ public interface ProductService {
     Page<ProductResponse> getProductsByCategory(String categoryId, Pageable pageable);
 
     Page<ProductResponse> getProductsByAuthor(String authorId, Pageable pageable);
+
+    Set<String> checkInvalidProductIds(Set<String> productIds);
 }

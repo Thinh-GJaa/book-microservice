@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "warehouses", uniqueConstraints = { @UniqueConstraint(columnNames = "code") }, indexes = {
+@Table(name = "warehouses",  indexes = {
         @Index(name = "idx_warehouse_name", columnList = "warehouseName") })
 public class Warehouse extends VersionEntity {
     @Id
@@ -40,6 +40,9 @@ public class Warehouse extends VersionEntity {
 
     @Column(nullable = false)
     LocalDateTime updatedDate; // Thời gian cập nhật bản ghi gần nhất
+
+    @OneToMany(mappedBy = "warehouse")
+    List<PurchaseOrder> purchaseOrders;
 
     @OneToMany(mappedBy = "warehouse")
     List<Inventory> inventories; // Danh sách các bản ghi tồn kho liên kết với kho này
