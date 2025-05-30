@@ -28,7 +28,7 @@ public class PurchaseOrder extends VersionEntity {
     @Column(length = 1000)
     String note;
 
-    @Column(precision = 18, scale = 2)
+    @Column(precision = 18, scale = 2, nullable = false)
     BigDecimal totalAmount;
 
     @Column(nullable = false, updatable = false)

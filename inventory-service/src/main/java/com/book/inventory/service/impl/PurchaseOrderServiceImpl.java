@@ -139,6 +139,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         return page.map(purchaseOrderMapper::toPurchaseOrderResponse);
     }
 
+    private static final int INVENTORY_WARNING_THRESHOLD = 10; // hoặc lấy từ config
+
     private void updateInventoryAfterPurchaseOrderCompletion(PurchaseOrder purchaseOrder) {
         List<Inventory> inventoriesToSave = new ArrayList<>();
         purchaseOrder.getDetails().forEach(detail -> {
@@ -151,21 +153,23 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                     .orElse(null);
 
             if (inventory == null) {
-                inventoriesToSave.add(
-                        Inventory.builder()
-                                .productId(productId)
-                                .warehouse(warehouse)
-                                .availableQuantity(detail.getQuantity())
-                                .reservedQuantity(0)
-                                .build());
+                inventory = Inventory.builder()
+                        .productId(productId)
+                        .warehouse(warehouse)
+                        .availableQuantity(detail.getQuantity())
+                        .reservedQuantity(0)
+                        .build();
             } else {
                 inventory.setAvailableQuantity(inventory.getAvailableQuantity() + detail.getQuantity());
-                inventoriesToSave.add(inventory);
             }
+            inventoriesToSave.add(inventory);
+
         });
         if (!inventoriesToSave.isEmpty()) {
             inventoryRepository.saveAll(inventoriesToSave);
         }
     }
+
+
 
 }

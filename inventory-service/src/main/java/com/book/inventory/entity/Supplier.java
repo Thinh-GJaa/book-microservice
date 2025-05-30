@@ -25,16 +25,16 @@ public class Supplier extends VersionEntity {
     @Column(nullable = false, unique = true, length = 100)
     String supplierName; // Tên nhà cung cấp
 
-    @Column(length = 255)
+    @Column(length = 100, nullable = false)
     String contactName; // Tên người liên hệ chính của nhà cung cấp
 
-    @Column(length = 100, unique = true)
+    @Column(length = 100, unique = true, nullable = false)
     String phoneNumber;
 
-    @Column(length = 255, unique = true)
+    @Column(length = 100, unique = true, nullable = false)
     String email;
 
-    @Column(length = 500)
+    @Column(length = 500, nullable = false)
     String address;
 
     @Column(length = 1000)

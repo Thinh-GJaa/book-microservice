@@ -23,7 +23,7 @@ public class Warehouse extends VersionEntity {
     @GenericGenerator(name = "uuid-generator", strategy = "uuid2")
     String warehouseId;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 100)
     String warehouseName; // Tên kho
 
     @Column(nullable = false, length = 500)
