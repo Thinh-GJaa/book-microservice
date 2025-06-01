@@ -1,5 +1,5 @@
 server:
-  port: 8085
+  port: 8084
   servlet:
     context-path: /inventory
 
@@ -16,7 +16,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: none # Để Flyway quản lý schema
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
@@ -24,8 +24,6 @@ spring:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
-    clean-on-validation-error: true
-    # validate-on-migrate: true  # (tùy chọn, mặc định đã là true)
 
 eureka:
   client:

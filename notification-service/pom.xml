@@ -107,6 +107,19 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Core Flyway -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>10.14.0</version>
+        </dependency>
+
+        <!-- Flyway MySQL extension (bắt buộc với MySQL 8+) -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+            <version>10.14.0</version>
+        </dependency>
 
         <!-- Utility -->
         <dependency>
