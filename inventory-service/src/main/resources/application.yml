@@ -20,6 +20,19 @@ spring:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
+  kafka:
+    bootstrap-servers: localhost:9093 # Kafka cluster address
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+    consumer:
+      group-id: identity-group  # tên group consumer
+      auto-offset-reset: earliest      # bắt đầu từ đầu nếu chưa có offset
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+
   flyway:
     enabled: true
     locations: classpath:db/migration
