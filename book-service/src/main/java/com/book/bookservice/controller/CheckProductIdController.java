@@ -25,15 +25,14 @@ public class CheckProductIdController {
     @PostMapping("/invalidate-ids")
     public ResponseEntity<?> checkProductIds(@RequestBody Set<String> productIds) {
 
-        Set<String> InvalidProductIds = productService.checkInvalidProductIds(productIds);
+        Set<String> invalidProductIds = productService.checkInvalidProductIds(productIds);
         
-        return ResponseEntity.ok(InvalidProductIds);
+        return ResponseEntity.ok(invalidProductIds);
     }
 
 
-    @GetMapping("/ids")
+    @PostMapping("/ids")
     public ResponseEntity<?> getProductsByIds(@RequestBody Set<String> productIds) {
-        log.info("Fetching products for IDs: {}", productIds);
 
         Set<ProductTitleResponse> products = productService.getProductsByIds(productIds);
 

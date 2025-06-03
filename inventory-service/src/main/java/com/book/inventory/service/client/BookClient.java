@@ -1,5 +1,6 @@
 package com.book.inventory.service.client;
 
+import com.book.inventory.dto.response.ProductTitleResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,4 +13,7 @@ public interface BookClient {
 
     @PostMapping(value = "/books/invalidate-ids", produces = MediaType.APPLICATION_JSON_VALUE)
     Set<String> checkInvalidProductIds(@RequestBody Set<String> productIds);
+
+    @PostMapping(value = "/books/ids", produces = MediaType.APPLICATION_JSON_VALUE)
+    Set<ProductTitleResponse> getProductTitlesByIds(@RequestBody Set<String> productIds);
 }
