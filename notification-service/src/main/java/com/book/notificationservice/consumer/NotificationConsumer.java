@@ -1,5 +1,6 @@
 package com.book.notificationservice.consumer;
 
+import com.book.notificationservice.dto.event.LowInventoryEvent;
 import com.book.notificationservice.dto.event.NotificationEvent;
 import com.book.notificationservice.parser.Parser;
 import com.book.notificationservice.service.EmailService;
@@ -43,4 +44,15 @@ public class NotificationConsumer {
         log.info("password-reset-topic: {}", parser.parseToEvent(eventJson, NotificationEvent.class));
 
     }
+
+    @KafkaListener(topics = "low-inventory-topic")
+    public void listenLowInventoryEvent(String eventJson){
+
+        LowInventoryEvent event = parser.parseToEvent(eventJson, LowInventoryEvent.class);
+
+        log.info("low-inventory-topic: {}", eventJson);
+
+    }
+
+
 }
