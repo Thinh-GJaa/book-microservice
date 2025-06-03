@@ -37,8 +37,7 @@ public class InventoryMonitorScheduler {
     final static String TIME_ZONE = "Asia/Ho_Chi_Minh";
 
     // Chạy vào 9:00 AM và 3:00 PM mỗi ngày
-//    @Scheduled(cron = "0 0 9,15 * * *", zone = TIME_ZONE)
-    @Scheduled(cron = "0 */1 * * * *", zone = TIME_ZONE)
+    @Scheduled(cron = "0 0 9,15 * * *", zone = TIME_ZONE)
     public void checkLowInventoryByWarehouse() {
         log.info("Starting scheduled inventory check at {}", LocalDateTime.now());
 
