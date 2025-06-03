@@ -3,6 +3,7 @@ package com.book.bookservice.service.impl;
 import com.book.bookservice.dto.request.CreateProductRequest;
 import com.book.bookservice.dto.request.UpdateProductRequest;
 import com.book.bookservice.dto.response.ProductResponse;
+import com.book.bookservice.dto.response.ProductTitleResponse;
 import com.book.bookservice.entity.Product;
 import com.book.bookservice.exception.CustomException;
 import com.book.bookservice.exception.ErrorCode;
@@ -118,6 +119,18 @@ public class ProductServiceImpl implements ProductService {
         invalidIds.removeAll(existingIds); // Loại bỏ những ID tồn tại
 
         return invalidIds;
+    }
+
+    @Override
+    public Set<ProductTitleResponse> getProductsByIds(Set<String> productIds) {
+        Set<String> invalidIds = checkInvalidProductIds(productIds);
+        if (!invalidIds.isEmpty()) {
+            throw new CustomException(ErrorCode.PRODUCT_ID_INVALID, String.join(",", invalidIds));
+        }
+        Set<Product> products = productRepository.findAllByProductIdIn(productIds);
+        return products.stream()
+                .map(productMapper::toProductTitleResponse)
+                .collect(Collectors.toSet());
     }
 
 }

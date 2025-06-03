@@ -3,6 +3,7 @@ package com.book.bookservice.service;
 import com.book.bookservice.dto.request.CreateProductRequest;
 import com.book.bookservice.dto.request.UpdateProductRequest;
 import com.book.bookservice.dto.response.ProductResponse;
+import com.book.bookservice.dto.response.ProductTitleResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -23,4 +24,6 @@ public interface ProductService {
     Page<ProductResponse> getProductsByAuthor(String authorId, Pageable pageable);
 
     Set<String> checkInvalidProductIds(Set<String> productIds);
+
+    Set<ProductTitleResponse> getProductsByIds(Set<String> productIds);
 }

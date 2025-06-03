@@ -20,6 +20,7 @@ public enum ErrorCode {
     PRODUCT_NOT_FOUND(10202, HttpStatus.NOT_FOUND, "Product with ID '{}' not found"),
     PRODUCT_ALREADY_IN_CART(10203, HttpStatus.CONFLICT, "Product with ID '{}' is already in cart"),
     PRODUCT_OUT_OF_STOCK(10204, HttpStatus.NOT_FOUND, "Product with ID '{}' has been sold out"),
+    PRODUCT_ID_INVALID(10205, HttpStatus.BAD_REQUEST, "Invalid product ID '{}' format or value"),
 
     // User-related errors
     EMAIL_ALREADY_EXISTS(10300, HttpStatus.CONFLICT, "Email '{}' already exists"),

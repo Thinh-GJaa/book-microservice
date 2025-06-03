@@ -1,6 +1,7 @@
 package com.book.bookservice.controller;
 
 
+import com.book.bookservice.dto.response.ProductTitleResponse;
 import com.book.bookservice.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -8,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
@@ -32,4 +30,13 @@ public class CheckProductIdController {
         return ResponseEntity.ok(InvalidProductIds);
     }
 
+
+    @GetMapping("/ids")
+    public ResponseEntity<?> getProductsByIds(@RequestBody Set<String> productIds) {
+        log.info("Fetching products for IDs: {}", productIds);
+
+        Set<ProductTitleResponse> products = productService.getProductsByIds(productIds);
+
+        return ResponseEntity.ok(products);
+    }
 }
