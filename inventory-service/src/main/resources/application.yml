@@ -27,7 +27,7 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
     consumer:
-      group-id: identity-group  # tên group consumer
+      group-id: inventory-group  # tên group consumer
       auto-offset-reset: earliest      # bắt đầu từ đầu nếu chưa có offset
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer

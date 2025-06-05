@@ -7,6 +7,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -55,4 +57,5 @@ public class Inventory extends VersionEntity {
     protected void onUpdate() {
         this.updatedDate = LocalDateTime.now();
     }
+
 }

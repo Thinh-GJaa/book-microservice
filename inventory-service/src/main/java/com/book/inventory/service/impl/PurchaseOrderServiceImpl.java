@@ -139,7 +139,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         return page.map(purchaseOrderMapper::toPurchaseOrderResponse);
     }
 
-    private static final int INVENTORY_WARNING_THRESHOLD = 10; // hoặc lấy từ config
 
     private void updateInventoryAfterPurchaseOrderCompletion(PurchaseOrder purchaseOrder) {
         List<Inventory> inventoriesToSave = new ArrayList<>();
@@ -169,7 +168,5 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             inventoryRepository.saveAll(inventoriesToSave);
         }
     }
-
-
 
 }
