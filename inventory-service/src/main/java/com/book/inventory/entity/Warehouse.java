@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -15,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "warehouses",  indexes = {
+@Table(name = "warehouses", indexes = {
         @Index(name = "idx_warehouse_name", columnList = "warehouseName") })
 public class Warehouse extends VersionEntity {
     @Id
@@ -46,6 +48,10 @@ public class Warehouse extends VersionEntity {
 
     @OneToMany(mappedBy = "warehouse")
     List<Inventory> inventories; // Danh sách các bản ghi tồn kho liên kết với kho này
+
+    @OneToMany(mappedBy = "warehouse")
+    @Builder.Default
+    List<StockOut> stockOuts = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

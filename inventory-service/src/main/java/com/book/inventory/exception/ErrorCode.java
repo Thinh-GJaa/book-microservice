@@ -127,7 +127,12 @@ public enum ErrorCode {
 
     // Warehouse-related errors
     WAREHOUSE_NOT_FOUND(14000, HttpStatus.NOT_FOUND, "Warehouse with ID '{}' not found"),
-    WAREHOUSE_NAME_ALREADY_EXISTS(14001, HttpStatus.CONFLICT, "Warehouse name '{}' already exists");
+    WAREHOUSE_NAME_ALREADY_EXISTS(14001, HttpStatus.CONFLICT, "Warehouse name '{}' already exists"),
+
+    // StockOut-related errors
+    STOCK_OUT_NOT_FOUND(15000, HttpStatus.NOT_FOUND, "Stock out with ID '%s' not found"),
+    INSUFFICIENT_STOCK(15001, HttpStatus.BAD_REQUEST, "Insufficient stock for product: '%s'"),
+    INVALID_STOCK_OUT_STATUS(15002, HttpStatus.BAD_REQUEST, "Invalid stock out status: '%s'");
 
     private final int code;
     private final HttpStatus status;
