@@ -1,6 +1,5 @@
 package com.book.profileservice.producer;
 
-
 import com.book.profileservice.dto.event.UpdateEmailEvent;
 import com.book.profileservice.parser.Parser;
 import lombok.AccessLevel;
@@ -9,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
-
 
 @Component
 @RequiredArgsConstructor
@@ -22,14 +20,14 @@ public class ProfileProducer {
 
     Parser parser;
 
-    public void updateEmail(String userId, String email ){
+    public void updateEmail(String userId, String email) {
 
         UpdateEmailEvent event = UpdateEmailEvent.builder()
                 .userId(userId)
                 .email(email)
                 .build();
 
-        kafkaTemplate.send("update-email-topic", parser.parseToJson(event));
+        kafkaTemplate.send("update-email-event", parser.parseToJson(event));
 
     }
 

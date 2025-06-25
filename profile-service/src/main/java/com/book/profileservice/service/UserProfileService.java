@@ -17,5 +17,6 @@ public interface UserProfileService {
 
     Page<ProfileResponse> getProfiles(String keyword, Pageable pageable);
 
+    String getEmailByUserId(String userId);
 
 }
