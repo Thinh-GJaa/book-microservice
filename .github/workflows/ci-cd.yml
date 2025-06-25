@@ -1,0 +1,40 @@
+name: CI for All Microservices
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-test-docker:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [api-gateway, book-service, identity-service, inventory-service, notification-service, order-service, payment-service, profile-service]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build and Test ${{ matrix.service }}
+        run: |
+          cd ${{ matrix.service }}
+          ./mvnw clean install
+
+      - name: Build Docker image for ${{ matrix.service }}
+        run: |
+          cd ${{ matrix.service }}
+          docker build -t ${{ matrix.service }}:latest . 
