@@ -17,6 +17,6 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void send(String recipient, String subject, String body) {
-        log.info("Email service: {} - {} - {}",recipient,subject, body );
+        log.info("[EMAIL SERVICE] Sending email to: {},\n Subject: {}, \nBody: {}", recipient, subject, body);
     }
 }
