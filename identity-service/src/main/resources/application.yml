@@ -43,6 +43,13 @@ spring:
         timeout: 60000
         #password: yourpassword
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 60000
+      #password: yourpassword
+
 eureka:
   client:
     register-with-eureka: true

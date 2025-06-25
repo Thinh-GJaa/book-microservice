@@ -32,6 +32,12 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 60000
+      #password: yourpassword
 
   flyway:
     enabled: true

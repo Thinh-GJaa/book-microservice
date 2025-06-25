@@ -11,48 +11,45 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class NotificationConsumer {
+public class ProfileConsumer {
 
     Parser parser;
 
     EmailService emailService;
 
-    @KafkaListener(topics = "create-profile-topic")
-    public void listenCreateProfileEvent(String eventJson){
+    @KafkaListener(topics = "create-profile-event")
+    public void listenCreateProfileEvent(String eventJson) {
 
         NotificationEvent event = parser.parseToEvent(eventJson, NotificationEvent.class);
 
-        emailService.send(event.getRecipient(), event. getSubject(), event.getBody());
+        emailService.send(event.getRecipient(), event.getSubject(), event.getBody());
 
-        log.info("create-profile-topic : {}", event);
+        log.info("create-profile-event : {}", event);
 
     }
 
-
-    @KafkaListener(topics = "password-reset-topic")
-    public void listenResetPasswordEvent(String eventJson){
+    @KafkaListener(topics = "password-reset-event")
+    public void listenResetPasswordEvent(String eventJson) {
 
         NotificationEvent event = parser.parseToEvent(eventJson, NotificationEvent.class);
 
-        emailService.send(event.getRecipient(), event. getSubject(), event.getBody());
+        emailService.send(event.getRecipient(), event.getSubject(), event.getBody());
 
-        log.info("password-reset-topic: {}", parser.parseToEvent(eventJson, NotificationEvent.class));
+        log.info("password-reset-event: {}", parser.parseToEvent(eventJson, NotificationEvent.class));
 
     }
 
-    @KafkaListener(topics = "low-inventory-topic")
-    public void listenLowInventoryEvent(String eventJson){
+    @KafkaListener(topics = "low-inventory-event")
+    public void listenLowInventoryEvent(String eventJson) {
 
         LowInventoryEvent event = parser.parseToEvent(eventJson, LowInventoryEvent.class);
 
-        log.info("low-inventory-topic: {}", eventJson);
+        log.info("low-inventory-event: {}", eventJson);
 
     }
-
 
 }
