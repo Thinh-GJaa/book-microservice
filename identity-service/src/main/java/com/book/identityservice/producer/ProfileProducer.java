@@ -17,7 +17,7 @@ public class ProfileProducer {
 
     Parser parser;
 
-    public void createProfile(String userName, String email){
+    public void createProfile(String userName, String email) {
         NotificationEvent event = NotificationEvent.builder()
                 .channel("Email")
                 .recipient(email)
@@ -25,6 +25,6 @@ public class ProfileProducer {
                 .body("Hello, " + userName)
                 .build();
 
-        kafkaTemplate.send("create-profile-topic", parser.parseToJson(event));
+        kafkaTemplate.send("create-profile-event", parser.parseToJson(event));
     }
 }
