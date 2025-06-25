@@ -29,6 +29,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Grant execute permission for mvnw
+        run: chmod +x ${{ matrix.service }}/mvnw
+
       - name: Build and Test ${{ matrix.service }}
         run: |
           cd ${{ matrix.service }}
