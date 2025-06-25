@@ -1,6 +1,5 @@
 package com.book.inventory.producer;
 
-
 import com.book.inventory.dto.event.LowInventoryEvent;
 import com.book.inventory.parser.Parser;
 import lombok.AccessLevel;
@@ -9,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
-
 
 @Component
 @RequiredArgsConstructor
@@ -28,10 +26,9 @@ public class InventoryProducer {
         String eventJson = parser.parseToJson(event);
 
         // Gửi sự kiện đến Kafka topic
-        kafkaTemplate.send("low-inventory-topic", eventJson);
+        kafkaTemplate.send("low-inventory-event", eventJson);
 
         log.info("Sent low inventory notification: {}", eventJson);
     }
-
 
 }
