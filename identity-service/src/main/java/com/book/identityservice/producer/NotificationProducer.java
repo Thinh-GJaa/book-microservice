@@ -17,7 +17,7 @@ public class NotificationProducer {
 
     Parser parser;
 
-    public void createProfileNotification(String userName, String email){
+    public void createProfileNotification(String userName, String email) {
         NotificationEvent event = NotificationEvent.builder()
                 .channel("Email")
                 .recipient(email)
@@ -25,31 +25,32 @@ public class NotificationProducer {
                 .body("Hello, " + userName)
                 .build();
 
-        kafkaTemplate.send("create-profile-topic", parser.parseToJson(event));
+        kafkaTemplate.send("create-profile-event", parser.parseToJson(event));
     }
 
-    public void resetLinkNotification(String email, String resetLink){
+    public void resetLinkNotification(String email, String resetLink) {
 
         String content = """
-            Hello ,
+                Hello ,
 
-            We received a request to reset the password for your account. If you did not make this request, please ignore this email.
+                We received a request to reset the password for your account. If you did not make this request, please ignore this email.
 
-            To reset your password, please click the link below:
+                To reset your password, please click the link below:
 
-            👉 %s
+                👉 %s
 
-            This link will expire in 5 minutes for security reasons.
+                This link will expire in 5 minutes for security reasons.
 
-            If you encounter any issues, feel free to contact our customer support team.
+                If you encounter any issues, feel free to contact our customer support team.
 
-            Best regards,
-            Support Team at %s
+                Best regards,
+                Support Team at %s
 
-            ---
+                ---
 
-            📩 This is an automated email. Please do not reply to this message.
-            """.formatted( resetLink, "ThinhGJaa");
+                📩 This is an automated email. Please do not reply to this message.
+                """
+                .formatted(resetLink, "ThinhGJaa");
 
         NotificationEvent event = NotificationEvent.builder()
                 .channel("Email")
@@ -58,6 +59,6 @@ public class NotificationProducer {
                 .body(content)
                 .build();
 
-        kafkaTemplate.send("password-reset-topic", parser.parseToJson(event));
+        kafkaTemplate.send("password-reset-event", parser.parseToJson(event));
     }
 }

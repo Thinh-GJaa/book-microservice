@@ -9,10 +9,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/internal")
@@ -27,6 +24,14 @@ public class InternalUserProfileController {
         return ApiResponse.<ProfileResponse>builder()
                 .message("Created profile user successfully")
                 .data(userProfileService.createProfile(request))
+                .build();
+    }
+
+    @GetMapping("/users/email/{userId}")
+    public ApiResponse<?> getEmailByUserId(@PathVariable String userId) {
+        return ApiResponse.<String>builder()
+                .message("Get email by userID successfully")
+                .data(userProfileService.getEmailByUserId(userId))
                 .build();
     }
 }

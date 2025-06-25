@@ -110,4 +110,12 @@ public class UserProfileServiceImpl implements UserProfileService {
         return profiles.map(profileMapper::toProfileResponse);
     }
 
+    @Override
+    public String getEmailByUserId(String userId) {
+        UserProfile userProfile = userProfileRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND, userId));
+
+        return userProfile.getEmail();
+    }
+
 }
