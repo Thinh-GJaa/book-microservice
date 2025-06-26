@@ -67,3 +67,22 @@ eureka:
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: Notification Service
+    description: Service quản lý notification cho hệ thống book-microservice
+    version: 1.0.0
+  author: "Thinh_GJaa"
