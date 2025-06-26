@@ -9,3 +9,22 @@ eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+    info:
+      env:
+        enabled: true
+  endpoint:
+    health:
+      show-details: always
+
+info:
+  app:
+    name: Discovery Service
+    description: Service quản lý service registry (Eureka) cho hệ thống book-microservice
+    version: 1.0.0
+  author: "Thinh_GJaa"
