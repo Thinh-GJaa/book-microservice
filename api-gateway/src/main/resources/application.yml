@@ -75,3 +75,23 @@ eureka:
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" # health,info,metrics,env,beans,loggers,threaddump,heapdump,conditions,configprops,shutdown,gateway
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: API Gateway
+    description: Service quản lý gateway cho hệ thống book-microservice
+    version: 1.0.0
+  author: "Thinh_GJaa"
+

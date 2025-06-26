@@ -29,6 +29,10 @@
     <properties>
         <java.version>17</java.version>
         <spring-cloud.version>2024.0.1</spring-cloud.version>
+        <project.name>Payment Service</project.name>
+        <project.description>Service quản lý thanh toán cho hệ thống book-microservice</project.description>
+        <project.version>1.0.0</project.version>
+        <project.author>Thinh_GJaa</project.author>
     </properties>
     <dependencies>
         <!-- Spring Boot Dependencies -->
@@ -219,6 +223,13 @@
                         </exclude>
                     </excludes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build-info</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
