@@ -67,7 +67,20 @@ management:
   endpoints:
     web:
       exposure:
-        include: info, health
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: Identity Service
+    description: Service quản lý identity cho hệ thống book-microservice
+    version: 1.0.0
+  author: "Thinh_GJaa"
 jwt:
   signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
   valid-duration: 86400 # second 24h
