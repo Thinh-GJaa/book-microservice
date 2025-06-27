@@ -22,18 +22,24 @@ import com.nimbusds.jose.JOSEException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Tag(name = "Authentication", description = "APIs for authentication, token management, and session operations.")
 public class AuthenticationController {
 
         AuthenticationService authenticationService;
 
+        @Operation(summary = "Login", description = "Authenticate user and return access/refresh tokens. Requires credentials.")
         @PostMapping("/token")
-        ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest loginRequest,
+        ResponseEntity<ApiResponse<LoginResponse>> login(
+                        @Parameter(description = "Login request body", required = true) @Valid @RequestBody LoginRequest loginRequest,
                         HttpServletResponse httpServletResponse) {
                 var data = authenticationService.login(loginRequest, httpServletResponse);
                 ApiResponse<LoginResponse> response = ApiResponse.<LoginResponse>builder()
@@ -42,8 +48,10 @@ public class AuthenticationController {
                 return ResponseEntity.ok(response);
         }
 
+        @Operation(summary = "Introspect token", description = "Validate and get information about an access token. Requires authentication.")
         @PostMapping("/introspect")
-        ResponseEntity<ApiResponse<IntrospectResponse>> introspect(@Valid @RequestBody IntrospectRequest request) {
+        ResponseEntity<ApiResponse<IntrospectResponse>> introspect(
+                        @Parameter(description = "Introspect request body", required = true) @Valid @RequestBody IntrospectRequest request) {
                 var result = authenticationService.introspect(request);
                 ApiResponse<IntrospectResponse> response = ApiResponse.<IntrospectResponse>builder()
                                 .data(result)
@@ -51,6 +59,7 @@ public class AuthenticationController {
                 return ResponseEntity.ok(response);
         }
 
+        @Operation(summary = "Refresh token", description = "Refresh access token using a valid refresh token. Requires authentication.")
         @PostMapping("/refresh")
         ResponseEntity<ApiResponse<RefreshResponse>> refreshToken(HttpServletRequest request,
                         HttpServletResponse response)
@@ -63,6 +72,7 @@ public class AuthenticationController {
                 return ResponseEntity.ok(apiResponse);
         }
 
+        @Operation(summary = "Logout", description = "Logout user and invalidate tokens. Requires authentication.")
         @PostMapping("/logout")
         ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request, HttpServletResponse response)
                         throws ParseException, JOSEException {
