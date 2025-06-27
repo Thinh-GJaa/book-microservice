@@ -1,7 +1,6 @@
 server:
   port: 8081
 
-
 spring:
   application:
     name: identity-service
@@ -86,5 +85,24 @@ jwt:
   valid-duration: 86400 # second 24h
   refreshable-duration: 2592000 #seconds 30 ngày
   issuer: "http://identity-service"
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duration: true
+    persist-authorization: true # Giữ lại token khi reload trang
+    try-it-out-enabled: true
+    defaultModelsExpandDepth: 1
+    defaultModelExpandDepth: 1
+    doc-expansion: none
+    filter: true
+    show-extensions: true
+    show-common-extensions: true
+  api-docs:
+    path: /v3/api-docs
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
 
 
