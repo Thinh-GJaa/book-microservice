@@ -49,7 +49,7 @@ public class SecurityConfig {
         httpSecurity.addFilterBefore((servletRequest, servletResponse, filterChain) -> {
             HttpServletRequest req = (HttpServletRequest) servletRequest;
             log.info("[SECURITY][HEADER] Authorization: [{}]", req.getHeader(HttpHeaders.AUTHORIZATION));
-            if (isPublicPath(req)) {
+            if (publicEndpoint(req)) {
                 log.info("[SECURITY][PUBLIC] [{}] {} accessed URI: {}", req.getMethod(), req.getRemoteAddr(),
                         req.getRequestURI());
             } else {
@@ -80,10 +80,11 @@ public class SecurityConfig {
         return jwtAuthenticationConverter;
     }
 
-    private static boolean isPublicPath(HttpServletRequest request) {
+    private static boolean publicEndpoint(HttpServletRequest request) {
         String path = request.getServletPath();
-        return Arrays.stream(PUBLIC_ENDPOINTS).anyMatch(pattern -> path.equals(pattern)
-                || (pattern.endsWith("/**") && path.startsWith(pattern.replace("/**", ""))));
+        return Arrays.stream(PUBLIC_ENDPOINTS)
+                .anyMatch(pattern -> pattern.endsWith("/**") ? path.startsWith(pattern.replace("/**", ""))
+                        : path.equals(pattern));
     }
 
 }
