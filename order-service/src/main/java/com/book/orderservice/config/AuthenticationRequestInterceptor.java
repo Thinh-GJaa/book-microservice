@@ -26,8 +26,10 @@ public class AuthenticationRequestInterceptor implements RequestInterceptor {
                                 ? servletRequestAttributes.getRequest().getHeader("Authorization")
                                 : null;
 
-                log.info("Header: {}", authHeader);
-                if (StringUtils.hasText(authHeader))
+                log.info("[FEIGN][AUTH] Extracted Authorization header: [{}]", authHeader);
+                if (StringUtils.hasText(authHeader)) {
                         template.header("Authorization", authHeader);
+                        log.info("[FEIGN][AUTH] Set Authorization header for outgoing request");
+                }
         }
 }
