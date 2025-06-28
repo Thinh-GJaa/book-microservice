@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
 
@@ -17,16 +18,20 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Schema(description = "Request for changing password")
 public class ChangePasswordRequest {
 
+    @Schema(description = "Current password", example = "OldPass@123")
     @NotBlank(message = "Password is required")
     @ValidPassword
     String password;
 
+    @Schema(description = "New password", example = "NewPass@123")
     @NotBlank(message = "Password is required")
     @ValidPassword
     String newPassword;
 
+    @Schema(description = "Confirm new password", example = "NewPass@123")
     @NotBlank(message = "Password is required")
     @ValidPassword
     String confirmNewPassword;

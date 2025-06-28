@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
@@ -20,11 +21,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Schema(description = "Request to update order status")
 public class UpdateOrderStatusRequest {
 
+    @Schema(description = "Order ID", example = "7b2a2e3c-9f92-4c73-a8be-1db4d17f3a3c")
     @NotBlank(message = "Order ID cannot be blank")
     String orderId;
 
+    @Schema(description = "Order status", example = "DELIVERED")
     @NotNull(message = "Status cannot be null")
     OrderStatus status;
 

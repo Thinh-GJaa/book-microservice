@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
@@ -18,9 +19,9 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CheckInventoryRequest {
 
-
     String address;
 
+    @Schema(description = "List of items to check inventory")
     @Valid
     @NotEmpty(message = "Items cannot be empty")
     List<Item> items;

@@ -4,7 +4,7 @@ package com.book.identityservice.service;
 import com.book.identityservice.dto.event.UpdateEmailEvent;
 import com.book.identityservice.dto.request.AdminCreationRequest;
 import com.book.identityservice.dto.request.ChangePasswordRequest;
-import com.book.identityservice.dto.request.ResetPasswordRequets;
+import com.book.identityservice.dto.request.ResetPasswordRequest;
 import com.book.identityservice.dto.request.UserCreationRequest;
 import com.book.identityservice.dto.response.ProfileResponse;
 
@@ -19,7 +19,7 @@ public interface UserService {
 
     String forgotPassword(String email);
 
-    void resetPassword(ResetPasswordRequets resetPasswordRequets);
+    void resetPassword(ResetPasswordRequest resetPasswordRequest);
 
     void verifyResetPasswordLink(String email, String token);
 

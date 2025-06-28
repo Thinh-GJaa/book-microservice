@@ -15,23 +15,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
+@Tag(name = "Admin", description = "APIs for admin account management.")
 public class AdminController {
     UserService userService;
 
+    @Operation(summary = "Create admin", description = "Register a new admin account. Returns profile information.")
     @PostMapping("/admin")
-    ResponseEntity<ApiResponse<ProfileResponse>> createUser(@RequestBody @Valid AdminCreationRequest request) {
+    ResponseEntity<ApiResponse<ProfileResponse>> createUser(
+            @Parameter(description = "Admin creation request body", required = true) @RequestBody @Valid AdminCreationRequest request) {
         ApiResponse<ProfileResponse> response = ApiResponse.<ProfileResponse>builder()
                 .message("Create profile successfully")
                 .data(userService.createAdmin(request))
                 .build();
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-
 
 }

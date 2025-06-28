@@ -13,16 +13,15 @@ import com.book.identityservice.repository.UserRepository;
 import com.book.identityservice.repository.httpclient.ProfileClient;
 import com.book.identityservice.service.UserService;
 import jakarta.transaction.Transactional;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.data.redis.core.StringRedisTemplate;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -134,7 +133,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String forgotPassword(String email) {
-        User user = userRepository.findByEmail(email)
+        userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND, email));
 
         String token = UUID.randomUUID().toString();
@@ -150,7 +149,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resetPassword(ResetPasswordRequets resetPasswordRequest) {
+    public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
 
         if (!resetPasswordRequest.getNewPassword().equals(resetPasswordRequest.getConfirmPassword()))
             throw new CustomException(ErrorCode.CONFIRM_PASSWORD_NOT_MATCH);
