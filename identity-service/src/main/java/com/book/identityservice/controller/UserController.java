@@ -2,7 +2,7 @@ package com.book.identityservice.controller;
 
 import com.book.identityservice.dto.ApiResponse;
 import com.book.identityservice.dto.request.ChangePasswordRequest;
-import com.book.identityservice.dto.request.ResetPasswordRequets;
+import com.book.identityservice.dto.request.ResetPasswordRequest;
 import com.book.identityservice.dto.request.UserCreationRequest;
 import com.book.identityservice.dto.response.ProfileResponse;
 import com.book.identityservice.service.UserService;
@@ -76,9 +76,9 @@ public class UserController {
     @Operation(summary = "Reset password", description = "Reset the user's password using a valid token.")
     @PostMapping("/reset-password")
     public ResponseEntity<ApiResponse<Void>> resetPassword(
-            @Valid @RequestBody ResetPasswordRequets resetPasswordRequets) {
+            @Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
 
-        userService.resetPassword(resetPasswordRequets);
+        userService.resetPassword(resetPasswordRequest);
 
         ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
                 .message("Reset password successfully")
