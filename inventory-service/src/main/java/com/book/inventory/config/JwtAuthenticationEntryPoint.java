@@ -26,7 +26,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             throws IOException {
         ErrorCode errorCode = ErrorCode.UNAUTHENTICATED;
 
-        log.error("Lỗi JwtAuthenticationEntryPoint");
+        log.error("[SECURITY][JWT][UNAUTHENTICATED] Path: [{}], Message: [{}]", request.getRequestURI(), authException.getMessage());
         response.setStatus(errorCode.getStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 

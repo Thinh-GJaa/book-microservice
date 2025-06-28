@@ -21,8 +21,14 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private static final String[] PUBLIC_ENDPOINTS = {
-
-
+        "/v3/api-docs",
+        "/v3/api-docs/**",
+        "/swagger-ui.html",
+        "/swagger-ui/**",
+        "/swagger-resources",
+        "/swagger-resources/**",
+        "/webjars/**"
+        // Thêm các endpoint public khác nếu có
     };
 
     private final CustomJwtDecoder customJwtDecoder;
@@ -34,10 +40,12 @@ public class SecurityConfig {
     // Hàm kiểm tra request có phải là public endpoint không
     private boolean isPublicEndpoint(HttpServletRequest request) {
         String path = request.getServletPath();
-        String method = request.getMethod();
         for (String endpoint : PUBLIC_ENDPOINTS) {
-            // Nếu chỉ cho phép POST cho các endpoint public
-            if (path.equals(endpoint) && "POST".equalsIgnoreCase(method)) {
+            if (endpoint.endsWith("/**")) {
+                if (path.startsWith(endpoint.replace("/**", ""))) {
+                    return true;
+                }
+            } else if (path.equals(endpoint)) {
                 return true;
             }
         }
@@ -46,26 +54,22 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        // Xác thực các endpoint công khai
+        log.info("Configuring SecurityFilterChain for Inventory Service");
         httpSecurity.authorizeHttpRequests(request -> request
-                // Cho phép các endpoint công khai
-                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                // Các endpoint khác yêu cầu xác thực
+                .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                 .anyRequest().authenticated());
 
-        // Log endpoint public hoặc cần xác thực
         httpSecurity.addFilterBefore((servletRequest, servletResponse, filterChain) -> {
             HttpServletRequest req = (HttpServletRequest) servletRequest;
-            log.info("header: {}", req.getHeader(HttpHeaders.AUTHORIZATION));
+            log.info("[SECURITY][HEADER] Authorization: [{}]", req.getHeader(HttpHeaders.AUTHORIZATION));
             if (isPublicEndpoint(req)) {
-                log.info("Public endpoint accessed: {} {}", req.getMethod(), req.getRequestURI());
+                log.info("[SECURITY][PUBLIC] [{}] {} accessed URI: {}", req.getMethod(), req.getRemoteAddr(), req.getRequestURI());
             } else {
-                log.info("Endpoint yêu cầu xác thực: {} {}", req.getMethod(), req.getRequestURI());
+                log.info("[SECURITY][AUTHENTICATED] [{}] {} accessed URI: {}", req.getMethod(), req.getRemoteAddr(), req.getRequestURI());
             }
             filterChain.doFilter(servletRequest, servletResponse);
         }, org.springframework.web.filter.CorsFilter.class);
 
-        // Cấu hình OAuth2 Resource Server
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
                         .decoder(customJwtDecoder)
                         .jwtAuthenticationConverter(jwtAuthenticationConverter()))
